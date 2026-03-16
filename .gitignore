@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Compiled CSS maps
+*.map
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+storage/logs/*
+
+# Build output
+public/assets/css/*.css
