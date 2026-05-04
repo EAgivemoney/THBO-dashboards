@@ -1,0 +1,67 @@
+@use 'sass:color';
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+.btn {
+    @include clickable;
+
+    display         : inline-flex;
+    align-items     : center;
+    justify-content : center;
+    gap             : $space-2;
+    padding         : $space-3 $space-5;
+    border          : 1px solid transparent;
+    border-radius   : $radius-md;
+    font-size       : $font-size-sm;
+    font-weight     : 600;
+    line-height     : 1;
+    text-decoration : none;
+    background      : $color-surface-alt;
+    color           : $color-text;
+
+    &:hover { background: $color-border; }
+
+    &:focus-visible { @include focus-ring; }
+
+    &:disabled,
+    &.is-disabled {
+        opacity      : 0.6;
+        cursor       : not-allowed;
+        pointer-events: none;
+    }
+
+    // ---- Variants -----------------------------------------------------------
+    &--primary {
+        background : $color-primary;
+        color      : #fff;
+        border-color: $color-primary;
+
+        &:hover { background: $color-primary-hover; border-color: $color-primary-hover; }
+    }
+
+    &--ghost {
+        background  : transparent;
+        color       : $color-text;
+        border-color: transparent;
+
+        &:hover { background: $color-surface-alt; }
+    }
+
+    &--danger {
+        background  : $color-danger;
+        border-color: $color-danger;
+        color       : #fff;
+
+        &:hover { background: color.adjust($color-danger, $lightness: -6%); }
+    }
+
+    // ---- Modifiers ----------------------------------------------------------
+    &--block {
+        width: 100%;
+    }
+
+    &--sm {
+        padding  : $space-2 $space-3;
+        font-size: $font-size-xs;
+    }
+}

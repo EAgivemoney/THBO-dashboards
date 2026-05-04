@@ -1,0 +1,6 @@
+# Als iemand WAMP rechtstreeks op de project-root laat wijzen,
+# stuur alle traffic door naar /public/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

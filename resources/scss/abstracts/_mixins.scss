@@ -1,0 +1,48 @@
+@use 'variables' as *;
+
+// ============================================================================
+// Mixins
+// ============================================================================
+
+@mixin card-surface {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-sm;
+}
+
+@mixin focus-ring($color: $color-primary) {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($color, 0.25);
+    border-color: $color;
+}
+
+@mixin clickable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color $transition-fast,
+                border-color   $transition-fast,
+                color          $transition-fast,
+                box-shadow     $transition-fast,
+                transform      $transition-fast;
+}
+
+@mixin breakpoint-md {
+    @media (max-width: 900px) { @content; }
+}
+
+@mixin breakpoint-sm {
+    @media (max-width: 600px) { @content; }
+}
+
+@mixin visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

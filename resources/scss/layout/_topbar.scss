@@ -1,0 +1,93 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// ============================================================================
+// Topbar
+// ============================================================================
+
+.topbar {
+    background     : $color-surface;
+    border-bottom  : 1px solid $color-border;
+    height         : $topbar-height;
+    display        : flex;
+    align-items    : center;
+    position       : sticky;
+    top            : 0;
+    z-index        : 50;
+    box-shadow     : $shadow-sm;
+
+    &__inner {
+        width          : 100%;
+        max-width      : $container-max;
+        margin         : 0 auto;
+        padding        : 0 $space-6;
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        gap            : $space-4;
+    }
+
+    &__brand {
+        display        : flex;
+        align-items    : center;
+        gap            : $space-3;
+        color          : $color-text;
+        font-weight    : 600;
+        font-size      : $font-size-lg;
+        text-decoration: none;
+
+        &:hover { text-decoration: none; }
+    }
+
+    &__logo {
+        width          : 36px;
+        height         : 36px;
+        display        : grid;
+        place-items    : center;
+        background     : linear-gradient(135deg, $color-primary 0%, #7c3aed 100%);
+        color          : #fff;
+        font-weight    : 700;
+        border-radius  : $radius-md;
+        box-shadow     : $shadow-sm;
+    }
+
+    &__name {
+        @include breakpoint-sm { display: none; }
+    }
+
+    &__nav {
+        display    : flex;
+        align-items: center;
+        gap        : $space-3;
+    }
+
+    &__user {
+        color    : $color-text-muted;
+        font-size: $font-size-sm;
+
+        @include breakpoint-sm { display: none; }
+    }
+}
+
+// ============================================================================
+// Footer
+// ============================================================================
+
+.footer {
+    border-top : 1px solid $color-border;
+    background : $color-surface;
+    padding    : $space-5 $space-6;
+    color      : $color-text-muted;
+    font-size  : $font-size-sm;
+
+    &__inner {
+        max-width      : $container-max;
+        margin         : 0 auto;
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        gap            : $space-4;
+    }
+
+    &__meta { color: $color-text-subtle; }
+}

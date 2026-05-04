@@ -1,0 +1,43 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// ============================================================================
+// Auth pages — login & register
+// ============================================================================
+
+.auth {
+    min-height : calc(100vh - #{$topbar-height} - 80px);
+    display    : grid;
+    place-items: center;
+    padding    : $space-6 $space-4;
+
+    // Subtle achtergrondaccent zodat de auth-pagina's niet zo kaal staan
+    background:
+        radial-gradient(circle at top right, rgba($color-primary, 0.08), transparent 40%),
+        radial-gradient(circle at bottom left, rgba(#7c3aed, 0.06), transparent 35%);
+
+    &__card {
+        @include card-surface;
+        width      : 100%;
+        max-width  : 480px;
+        padding    : $space-8;
+        box-shadow : $shadow-md;
+    }
+
+    &__title {
+        font-size    : $font-size-xxl;
+        margin-bottom: $space-2;
+    }
+
+    &__subtitle {
+        color        : $color-text-muted;
+        margin-bottom: $space-6;
+    }
+
+    &__alt {
+        margin-top: $space-5;
+        text-align: center;
+        font-size : $font-size-sm;
+        color     : $color-text-muted;
+    }
+}

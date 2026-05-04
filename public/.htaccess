@@ -1,0 +1,14 @@
+# Stuur alle requests die niet naar een bestaand bestand of directory qijzen
+# door naar index.php. Vereist mod_rewrite (standaard aan in WAMP).
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    RewriteRule ^ index.php [L]
+<IfModule>
+
+# Bescherm tegen directory listing
+Options -Indexes

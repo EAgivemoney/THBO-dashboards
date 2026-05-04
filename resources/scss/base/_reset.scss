@@ -1,0 +1,57 @@
+@use '../abstracts/variables' as *;
+
+// ============================================================================
+// Reset & base
+// ============================================================================
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family : $font-family-base;
+    font-size   : $font-size-base;
+    line-height : $line-height-base;
+    color       : $color-text;
+    background  : $color-bg;
+    min-height  : 100vh;
+    display     : flex;
+    flex-direction: column;
+}
+
+a {
+    color           : $color-primary;
+    text-decoration : none;
+
+    &:hover { text-decoration: underline; }
+}
+
+h1, h2, h3, h4 {
+    margin     : 0;
+    font-family: $font-family-display;
+    font-weight: 600;
+    line-height: $line-height-tight;
+    color      : $color-text;
+}
+
+p { margin: 0; }
+
+button {
+    font-family: inherit;
+    font-size  : inherit;
+    cursor     : pointer;
+}
+
+img { max-width: 100%; display: block; }
+
+// Globale layout — main moet de footer naar onderen drukken
+.app    { min-height: 100vh; display: flex; flex-direction: column; }
+.main   { flex: 1; padding: $space-8 $space-6; }

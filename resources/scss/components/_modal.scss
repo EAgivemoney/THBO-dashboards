@@ -1,0 +1,71 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// ============================================================================
+// Modal
+// ============================================================================
+
+.modal {
+    position : fixed;
+    inset    : 0;
+    z-index  : 100;
+    display  : grid;
+    place-items: center;
+    padding  : $space-6;
+
+    &[hidden] { display: none; }
+
+    &__backdrop {
+        position  : absolute;
+        inset     : 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(2px);
+    }
+
+    &__panel {
+        position     : relative;
+        @include card-surface;
+        box-shadow   : $shadow-lg;
+        width        : 100%;
+        max-width    : 540px;
+        padding      : $space-6;
+        animation    : modal-pop $transition-base;
+    }
+
+    &__head {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        margin-bottom  : $space-5;
+    }
+
+    &__title {
+        font-size: $font-size-xl;
+    }
+
+    &__close {
+        @include clickable;
+        background    : transparent;
+        border        : none;
+        font-size     : 1.5rem;
+        line-height   : 1;
+        color         : $color-text-muted;
+        width         : 32px;
+        height        : 32px;
+        border-radius : $radius-sm;
+
+        &:hover { color: $color-text; background: $color-surface-alt; }
+    }
+
+    &__actions {
+        display        : flex;
+        justify-content: flex-end;
+        gap            : $space-3;
+        margin-top     : $space-4;
+    }
+}
+
+@keyframes modal-pop {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+}

@@ -1,0 +1,223 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+// ============================================================================
+// Dashboard wrapper
+// ============================================================================
+
+.dashboard {
+    max-width: $container-max;
+    margin   : 0 auto;
+
+    &__head {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        gap            : $space-4;
+        margin-bottom  : $space-6;
+        flex-wrap      : wrap;
+    }
+
+    &__title {
+        font-size: $font-size-xxl;
+    }
+
+    &__subtitle {
+        color    : $color-text-muted;
+        margin-top: $space-1;
+        font-size: $font-size-sm;
+    }
+}
+
+// ============================================================================
+// Kanban-bord
+// ============================================================================
+
+.kanban {
+    display              : grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap                  : $space-5;
+
+    @include breakpoint-md {
+        grid-template-columns: 1fr;
+    }
+
+    &__col {
+        @include card-surface;
+        padding       : $space-4;
+        background    : $color-surface-alt;
+        border-color  : $color-border;
+        display       : flex;
+        flex-direction: column;
+        min-height    : 200px;
+
+        // Gekleurd lijntje boven elke kolom dat per status verschilt
+        position      : relative;
+        padding-top   : $space-5;
+
+        &::before {
+            content      : '';
+            position     : absolute;
+            top          : 0;
+            left         : 0;
+            right        : 0;
+            height       : 4px;
+            border-radius: $radius-lg $radius-lg 0 0;
+            background   : $color-text-subtle;
+        }
+
+        &[data-slug="todo"]::before  { background: $color-todo; }
+        &[data-slug="doing"]::before { background: $color-doing; }
+        &[data-slug="done"]::before  { background: $color-done; }
+    }
+
+    &__col-head {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        margin-bottom  : $space-4;
+    }
+
+    &__col-title {
+        font-size  : $font-size-lg;
+        font-weight: 600;
+    }
+
+    &__count {
+        background   : $color-surface;
+        border       : 1px solid $color-border;
+        padding      : 2px $space-3;
+        border-radius: 999px;
+        font-size    : $font-size-xs;
+        color        : $color-text-muted;
+        font-weight  : 600;
+    }
+
+    &__list {
+        display       : flex;
+        flex-direction: column;
+        gap           : $space-3;
+        min-height    : 60px;
+        flex          : 1;
+        padding       : $space-2;
+        border-radius : $radius-md;
+        transition    : background-color $transition-fast,
+                        border-color     $transition-fast;
+        border        : 2px dashed transparent;
+
+        &--over {
+            background  : $color-primary-soft;
+            border-color: rgba($color-primary, 0.4);
+        }
+    }
+
+    &__empty {
+        color     : $color-text-subtle;
+        font-size : $font-size-sm;
+        text-align: center;
+        padding   : $space-6 $space-2;
+        font-style: italic;
+    }
+}
+
+// ============================================================================
+// Taakkaartje
+// ============================================================================
+
+.card {
+    @include card-surface;
+    @include clickable;
+
+    padding       : $space-4;
+    cursor        : grab;
+    display       : flex;
+    flex-direction: column;
+    gap           : $space-3;
+
+    &:hover {
+        transform : translateY(-1px);
+        box-shadow: $shadow-md;
+    }
+
+    &:active { cursor: grabbing; }
+
+    &--dragging {
+        opacity  : 0.5;
+        transform: rotate(1.5deg);
+    }
+
+    &__head {
+        display        : flex;
+        align-items    : flex-start;
+        justify-content: space-between;
+        gap            : $space-3;
+    }
+
+    &__title {
+        font-size  : $font-size-base;
+        font-weight: 600;
+        line-height: $line-height-tight;
+        flex       : 1;
+    }
+
+    &__body {
+        color    : $color-text-muted;
+        font-size: $font-size-sm;
+    }
+
+    &__foot {
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        gap            : $space-2;
+        flex-wrap      : wrap;
+        font-size      : $font-size-xs;
+        color          : $color-text-muted;
+        margin-top     : auto;
+    }
+
+    &__meta {
+        background   : $color-surface-alt;
+        padding      : 2px $space-2;
+        border-radius: $radius-sm;
+        border       : 1px solid $color-border;
+    }
+
+    &__deadline {
+        color: $color-warning;
+    }
+
+    &__delete {
+        margin-left: auto;
+    }
+
+    &__delete-btn {
+        background   : transparent;
+        border       : none;
+        color        : $color-text-subtle;
+        font-size    : 1.25rem;
+        line-height  : 1;
+        width        : 24px;
+        height       : 24px;
+        border-radius: $radius-sm;
+        @include clickable;
+
+        &:hover { color: $color-danger; background: $color-danger-soft; }
+    }
+
+    // Prioriteit-badges
+    &__prio {
+        font-size    : $font-size-xs;
+        font-weight  : 600;
+        padding      : 2px $space-2;
+        border-radius: $radius-sm;
+        white-space  : nowrap;
+        color        : #fff;
+
+        &.prio--1 { background: $color-prio-1; }
+        &.prio--2 { background: $color-prio-2; }
+        &.prio--3 { background: $color-prio-3; }
+        &.prio--4 { background: $color-prio-4; }
+        &.prio--5 { background: $color-prio-5; }
+    }
+}

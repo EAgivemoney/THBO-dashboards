@@ -1,0 +1,37 @@
+@use 'sass:color';
+@use '../abstracts/variables' as *;
+
+// ============================================================================
+// Alerts
+// ============================================================================
+
+.alert {
+    padding      : $space-4 $space-5;
+    border-radius: $radius-md;
+    border       : 1px solid transparent;
+    margin-bottom: $space-4;
+    font-size    : $font-size-sm;
+
+    ul {
+        margin     : 0;
+        padding-left: $space-5;
+    }
+
+    &--success {
+        background  : $color-success-soft;
+        border-color: rgba($color-success, 0.3);
+        color       : color.adjust($color-success, $lightness: -10%);
+    }
+
+    &--error {
+        background  : $color-danger-soft;
+        border-color: rgba($color-danger, 0.3);
+        color       : color.adjust($color-danger, $lightness: -8%);
+    }
+
+    &--warning {
+        background  : $color-warning-soft;
+        border-color: rgba($color-warning, 0.3);
+        color       : color.adjust($color-warning, $lightness: -5%);
+    }
+}
