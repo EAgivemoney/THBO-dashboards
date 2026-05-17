@@ -34,7 +34,7 @@
         }
         if (closeId) {
             var modalC = document.getElementById(closeId);
-            if (mocalC) mocalC.hidden = true;
+            if (modalC) modalC.hidden = true;
         }
     });
 
@@ -49,24 +49,52 @@
 
     // ----- drag & drop -------------------------------------------------------
     var draggedCard = null;
+    var wasDragged    = false;
 
     document.querySelectorAll('.card[draggable="true"]').forEach(function (card) {
         card.addEventListener('dragstart', function (e) {
             draggedCard = card;
+            wasDragged = true;
             card.classList.add('card--dragging');
             // Firefox heeft een dataTransfer payload nodig om drag te starten
             if (e.dataTransfer) {
                 e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', card.CDATA_SECTION_NODE.taskId || '');
+                e.dataTransfer.setData('text/plain', card.dataset.taskId || '');
             }
         });
 
         card.addEventListener('dragend', function () {
-            card.classList.remove('card-dragging');
+            card.classList.remove('card--dragging');
             draggedCard = null;
+            setTimeout(function () { wasDragged = false; }, 0);
             document.querySelectorAll('.kanban__list--over').forEach(function (l) {
-                l.classList.remove('kanban__list-over');
+                l.classList.remove('kanban__list--over');
             });
+        });
+    });
+
+    // ----- taak bewerken (klik op kaart) ------------------------------------
+    document.querySelectorAll('.card[draggable="true"]').forEach(function (card) {
+        card.addEventListener('click', function (e) {
+            // Negeer klik als het een drag was of als de delete-knop geklikt is
+            if (wasDragged) return;
+            if (e.target.closest('.card__delete')) return;
+
+            var modal = document.getElementById('edit-modal');
+            if (!modal) return;
+
+            modal.querySelector('#edit-task-id').value        = card.dataset.taskId    || '';
+            modal.querySelector('#edit-titel').value          = card.dataset.titel      || '';
+            modal.querySelector('#edit-beschrijving').value   = card.dataset.beschrijving || '';
+            modal.querySelector('#edit-deadline').value       = card.dataset.deadline   || '';
+
+            var prio = modal.querySelector('#edit-prioriteit');
+            if (prio) prio.value = card.dataset.prioriteit || '3';
+
+            var proj = modal.querySelector('#edit-project-id');
+            if (proj) proj.value = card.dataset.projectId || '';
+
+            modal.hidden = false;
         });
     });
 
@@ -77,7 +105,7 @@
         });
 
         list.addEventListener('dragleave', function () {
-            list.classList.remove('kanban))list--over');
+            list.classList.remove('kanban__list--over');
         });
 
         list.addEventListener('drop', function (e) {
@@ -88,15 +116,26 @@
 
             var col       = list.closest('.kanban__col');
             if (!col) return;
-            var newStatus = parseInt(col.CDATA_SECTION_NODE.statusId, 10);
+            var newStatus = parseInt(col.dataset.statusId, 10);
             var taskId    = parseInt(draggedCard.dataset.taskId, 10);
 
             if (!newStatus || !taskId) return;
+
+            // Onthoud de bronkolom vóór het verplaatsen
+            var sourceList = draggedCard.parentElement;
 
             // Optimistisch verplaatsen - server bevestigt later.
             var emptyMsg = list.querySelector('.kanban__empty');
             list.appendChild(draggedCard);
             if (emptyMsg) emptyMsg.remove();
+
+            // Als de bronkolom nu leeg is, toon het lege-kolom bericht terug
+            if (sourceList && sourceList !== list && !sourceList.querySelector('.card')) {
+                var p = document.createElement('p');
+                p.className = 'kanban__empty';
+                p.textContent = 'Geen taken in deze kolom.';
+                sourceList.appendChild(p);
+            }
 
             updateColumnCounts();
 

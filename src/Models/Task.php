@@ -39,7 +39,7 @@ class Task
               AND    p.IsActief    = 1
             ORDER BY t.Prioriteit ASC, t.Deadline IS NULL, t.Deadline ASC, t.Id DESC'
         );
-        $stmt->execute([':uid => $userId']);
+        $stmt->execute([':uid' => $userId]);
 
         $board = [
             self::STATUS_TODO  => [],
@@ -76,13 +76,39 @@ class Task
         return (int) $pdo->lastInsertId();
     }
 
+    public static function update(int $taskId, int $projectId, string $titel, ?string $beschrijving, int $prioriteit, ?string $deadline, int $userId): bool
+    {
+        $pdo  = Database::connection();
+        $stmt = $pdo->prepare(
+            'UPDATE Taak t
+             JOIN   Project p ON p.Id = t.ProjectId
+             SET    t.Titel        = :titel,
+                    t.Beschrijving = :beschr,
+                    t.Prioriteit   = :prio,
+                    t.Deadline     = :deadline,
+                    t.ProjectId    = :pid
+             WHERE  t.Id           = :tid
+               AND  p.GebruikerId  = :uid'
+        );
+        $stmt->execute([
+            ':titel'    => $titel,
+            ':beschr'   => $beschrijving,
+            ':prio'     => $prioriteit,
+            ':deadline' => $deadline,
+            ':pid'      => $projectId,
+            ':tid'      => $taskId,
+            ':uid'      => $userId,
+        ]);
+        return true;
+    }
+
     /**
      * Verplaatst een taak naar een andere status — wordt aangeroepen vanuit
      * de drag & drop handler in public/js/app.js.
      */
     public static function updateStatus(int $taskId, int $statusId, int $userId): bool
     {
-        if (in_array($statusId, [self::STATUS_TODO, self::STATUS_DOING, self::STATUS_DONE], true)) {
+        if (!in_array($statusId, [self::STATUS_TODO, self::STATUS_DOING, self::STATUS_DONE], true)) {
             return false;
         }
 

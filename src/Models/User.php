@@ -58,14 +58,14 @@ class User
             'INSERT INTO Gebruiker
                 (RolId, Voornaam, Tussenvoegsel, Achternaam, Email, WachtwoordHash)
              VALUES
-                (:rol, :vn, :tv, :an, :email, :hash'
+                (:rol, :vn, :tv, :an, :email, :hash)'
         );
         $stmt->execute([
             ':rol'   => $data['rolId'] ?? 1, // 1 = gebruiker
             ':vn'    => $data['voornaam'],
             ':tv'    => $data['tussenvoegsel'] ?: null,
             ':an'    => $data['achternaam'],
-            'email'  => $data['email'],
+            ':email' => $data['email'],
             ':hash'  => password_hash($data['wachtwoord'], PASSWORD_DEFAULT),
         ]);
 

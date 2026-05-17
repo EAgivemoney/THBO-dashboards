@@ -8,7 +8,7 @@
     RewriteRule ^ - [L]
 
     RewriteRule ^ index.php [L]
-<IfModule>
+</IfModule>
 
 # Bescherm tegen directory listing
 Options -Indexes

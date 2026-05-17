@@ -71,7 +71,7 @@ $router = new Router();
 $auth   = new AuthController();
 $tasks  = new TaskController();
 
-$router->get ('/',          fn() => header('Location: ' . base_url(empty($_SESSION['user_id']) ? '/login' : '/dashboards')));
+$router->get ('/',          fn() => header('Location: ' . base_url(empty($_SESSION['user_id']) ? '/login' : '/dashboard')));
 
 $router->get ('/login',     fn() => $auth->showLogin());
 $router->post('/login',     fn() => $auth->login());
@@ -81,6 +81,7 @@ $router->get ('/logout',    fn() => $auth->logout());
 
 $router->get ('/dashboard',          fn() => $tasks->dashboard());
 $router->post('/tasks',              fn() => $tasks->store());
+$router->post('/tasks/update',       fn() => $tasks->update());
 $router->post('/tasks/status/',      fn() => $tasks->updateStatus());
 $router->post('/tasks/delete',       fn() => $tasks->delete());
 

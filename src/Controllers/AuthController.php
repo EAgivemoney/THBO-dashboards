@@ -56,7 +56,7 @@ class AuthController
     {
         $title  = 'Registreren';
         $errors = $_SESSION['errors'] ?? [];
-        $old    = $_SESSIONS['old']   ?? [];
+        $old    = $_SESSION['old']    ?? [];
         unset($_SESSION['errors'], $_SESSION['old']);
 
         require dirname(__DIR__) . '/Views/layout/header.php';
@@ -82,7 +82,7 @@ class AuthController
         if (strlen($wachtwoord) < 8)                { $errors[] = 'Wachtwoord moet minimaal 8 tekens zijn.';}
         if ($wachtwoord !== $bevestiging)           { $errors[] = 'De wachtwoorden komen niet overeen.'; }
 
-        if (!$errors & User::findByEmail($email)) {
+        if (!$errors && User::findByEmail($email)) {
             $errors[] = 'Er bestaat al een account met dit e-mailadres.';
         }
 

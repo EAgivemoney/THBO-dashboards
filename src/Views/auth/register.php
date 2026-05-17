@@ -15,14 +15,15 @@
         <?php endif; ?>
 
         <form action="<?= base_url('/register') ?>" method="post" class="form">
-            <div class="form__row">
+
+            <div class="form__row" style="grid-template-columns: 1fr minmax(80px, 140px) 1fr;">
                 <label class="form__field">
                     <span class="form__label">Voornaam</span>
                     <input type="text" name="voornaam"
                            value="<?= htmlspecialchars($old['voornaam'] ?? '') ?>" required>
                 </label>
 
-                <label class="form__field form__field--narrow">
+                <label class="form__field">
                     <span class="form__label">Tussenvoegsel</span>
                     <input type="text" name="tussenvoegsel"
                            value="<?= htmlspecialchars($old['tussenvoegsel'] ?? '') ?>">

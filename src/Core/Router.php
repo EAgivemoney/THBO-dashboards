@@ -45,7 +45,7 @@ class Router
         // Verwijder de /public prefix als de site via WAMP onder een submap draait
         // (bijv. http://localhost/THBO-dashboards/public/dashboard).
         $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-        if ($scriptDir !== str_starts_with($uri, $scriptDir)) {
+        if ($scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
             $uri = substr($uri, strlen($scriptDir));
         }
 

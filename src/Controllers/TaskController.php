@@ -30,8 +30,8 @@ class TaskController
         unset($_SESSION['flash'], $_SESSION['errors']);
 
         require dirname(__DIR__) . '/Views/layout/header.php';
-        require dirname(__DIR__) . '/Views/dashboards/index.php';
-        require dirname(__DIR__) . '/Views/layout.footer.php';
+        require dirname(__DIR__) . '/Views/dashboard/index.php';
+        require dirname(__DIR__) . '/Views/layout/footer.php';
     }
 
     public function store(): void
@@ -69,7 +69,7 @@ class TaskController
             $_SESSION['flash'] = 'Taak toegevoegd.';
         }
 
-        header('Location: ' . base_url('/dashboards'));
+        header('Location: ' . base_url('/dashboard'));
         exit;
     }
 
@@ -101,6 +101,42 @@ class TaskController
         echo json_encode(['ok' => $ok]);
     }
 
+
+    public function update(): void
+    {
+        $userId = $this->requireLogin();
+
+        $taskId       = (int)   ($_POST['task_id']       ?? 0);
+        $titel        = trim(   $_POST['titel']          ?? '');
+        $beschrijving = trim(   $_POST['beschrijving']   ?? '');
+        $projectId    = (int)   ($_POST['project_id']    ?? 0);
+        $prioriteit   = max(1, min(5, (int) ($_POST['prioriteit'] ?? 3)));
+        $deadline     = trim(   $_POST['deadline']       ?? '');
+
+        $errors = [];
+        if ($taskId <= 0)     { $errors[] = 'Ongeldige taak.'; }
+        if ($titel === '')    { $errors[] = 'Titel is verplicht.'; }
+        if ($projectId === 0) { $errors[] = 'Kies een project.'; }
+
+        if (!$errors) {
+            $owns = false;
+            foreach (Task::projectsForUser($userId) as $p) {
+                if ((int) $p['Id'] === $projectId) { $owns = true; break; }
+            }
+            if (!$owns) { $errors[] = 'Ongeldig project.'; }
+        }
+
+        if ($errors) {
+            $_SESSION['errors'] = $errors;
+        } else {
+            Task::update($taskId, $projectId, $titel, $beschrijving ?: null, $prioriteit, $deadline ?: null, $userId);
+            $_SESSION['flash'] = 'Taak bijgewerkt.';
+        }
+
+        header('Location: ' . base_url('/dashboard'));
+        exit;
+    }
+
     public function delete(): void
     {
         $userId = $this->requireLogin();
@@ -112,6 +148,6 @@ class TaskController
             $_SESSION['errors'] = ['Kon de taak niet verwijderen.'];
         }
 
-        header('Location: ' . base_url('/dashboards/'));
+        header('Location: ' . base_url('/dashboard'));
     }
 }

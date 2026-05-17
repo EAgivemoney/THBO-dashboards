@@ -1,4 +1,4 @@
-    </main>
+</main>
 
     <footer class="footer">
         <div class="footer__inner">
@@ -7,6 +7,6 @@
         </div>
     </footer>
 
-    <script src="<?= base_url('/js/app.js') ?>"></script>
+    <script src="<?= base_url('/js/app.js') ?>?v=<?= filemtime(dirname(__DIR__, 3) . '/public/js/app.js') ?>"></script>
 </body>
 </html>
