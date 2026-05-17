@@ -18,7 +18,7 @@ THBO-dashboards/
 │   ├── index.php       # Front controller
 │   ├── .htaccess       # mod_rewrite regels
 │   ├── js/app.js       # Drag & drop + modal
-│   └── assets/css/     # Gecompileerde CSS (output)
+│   └── css/main.css    # Gecompileerde CSS (output)
 ├── resources/scss/     # SCSS bronbestanden
 │   ├── abstracts/      # Variables, mixins
 │   ├── base/           # Reset, global
