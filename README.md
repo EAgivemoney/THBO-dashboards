@@ -6,7 +6,7 @@ Een eenvoudig PHP/MySQL dashboard met een Kanban-bord (todo / doing / done) voor
 
 - **PHP 8.1+** (strict types, PSR-4 autoloading, PDO)
 - **MySQL / MariaDB** (zie `sql/database.sql`)
-- **SCSS** (compileert naar `public/assets/css/main.css`)
+- **SCSS** (compileert naar `public/css/main.css`)
 - **Vanilla JS** voor drag & drop op het Kanban-bord
 
 ## Mappenstructuur
@@ -18,7 +18,7 @@ THBO-dashboards/
 │   ├── index.php       # Front controller
 │   ├── .htaccess       # mod_rewrite regels
 │   ├── js/app.js       # Drag & drop + modal
-│   └── assets/css/     # Gecompileerde CSS (output)
+│   └── css/main.css    # Gecompileerde CSS (output)
 ├── resources/scss/     # SCSS bronbestanden
 │   ├── abstracts/      # Variables, mixins
 │   ├── base/           # Reset, global
