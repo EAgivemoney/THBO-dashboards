@@ -33,7 +33,7 @@ class User
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
             'SELECT Id, RolId, Voornaam, Tussenvoegsel, Achternaam, VolledigeNaam,
-                    Email, IsActief
+                    Email, IsActief, AangemaaktOp
             FROM  Gebruiker
             WHERE Id = :id
             LIMIT 1'
@@ -75,5 +75,33 @@ class User
     public static function verifyPassword(string $plain, string $hash): bool
     {
         return password_verify($plain, $hash);
+    }
+
+    /**
+     * Werkt het wachtwoord bij van een gebruiker.
+     * Geeft false terug als het huidige wachtwoord niet klopt.
+     */
+    public static function updatePassword(int $userId, string $huidig, string $nieuw): bool
+    {
+        $pdo  = Database::connection();
+        $stmt = $pdo->prepare(
+            'SELECT WachtwoordHash FROM Gebruiker WHERE Id = :id AND IsActief = 1 LIMIT 1'
+        );
+        $stmt->execute([':id' => $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row || !password_verify($huidig, $row['WachtwoordHash'])) {
+            return false;
+        }
+
+        $update = $pdo->prepare(
+            'UPDATE Gebruiker SET WachtwoordHash = :hash WHERE Id = :id'
+        );
+        $update->execute([
+            ':hash' => password_hash($nieuw, PASSWORD_DEFAULT),
+            ':id'   => $userId,
+        ]);
+
+        return true;
     }
 }

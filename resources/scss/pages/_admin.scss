@@ -1,0 +1,265 @@
+@use 'sass:color';
+@use '../abstracts/variables' as *;
+
+// ============================================================================
+// Admin panel
+// ============================================================================
+
+.admin {
+    max-width : $container-max;
+    margin    : 0 auto;
+    padding   : $space-8 $space-6;
+}
+
+.admin__head {
+    display        : flex;
+    align-items    : flex-start;
+    justify-content: space-between;
+    gap            : $space-4;
+    margin-bottom  : $space-8;
+}
+
+.admin__title {
+    font-size    : $font-size-xl;
+    font-weight  : 700;
+    color        : $color-text;
+    display      : flex;
+    align-items  : center;
+    gap          : $space-3;
+    margin-bottom: $space-1;
+}
+
+.admin__subtitle {
+    font-size: $font-size-sm;
+    color    : $color-text-muted;
+}
+
+// ── Rol badges ───────────────────────────────────────────────────────────────
+.rol-badge {
+    display      : inline-block;
+    padding      : 2px $space-2;
+    border-radius: $radius-sm;
+    font-size    : $font-size-xs;
+    font-weight  : 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &--eigenaar {
+        background: color.adjust($color-warning, $lightness: 30%);
+        color     : color.adjust($color-warning, $lightness: -15%);
+    }
+
+    &--admin {
+        background: $color-primary-soft;
+        color     : $color-primary;
+    }
+
+    &--gebruiker {
+        background: $color-surface-alt;
+        color     : $color-text-muted;
+    }
+}
+
+// ── Statistieken ─────────────────────────────────────────────────────────────
+.admin-stats {
+    display              : grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap                  : $space-4;
+    margin-bottom        : $space-8;
+}
+
+.stat-card {
+    background   : $color-surface;
+    border       : 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding      : $space-5 $space-6;
+    display      : flex;
+    flex-direction: column;
+    gap          : $space-1;
+
+    &--accent {
+        background  : $color-primary-soft;
+        border-color: color.adjust($color-primary, $lightness: 25%);
+    }
+}
+
+.stat-card__getal {
+    font-size  : $font-size-xxl;
+    font-weight: 700;
+    color      : $color-text;
+    line-height: 1;
+}
+
+.stat-card__label {
+    font-size: $font-size-sm;
+    color    : $color-text-muted;
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+.admin-tabs {
+    display      : flex;
+    gap          : $space-2;
+    margin-bottom: $space-4;
+    border-bottom: 2px solid $color-border;
+}
+
+.admin-tab {
+    background   : none;
+    border       : none;
+    padding      : $space-3 $space-4;
+    font-size    : $font-size-sm;
+    font-weight  : 500;
+    color        : $color-text-muted;
+    cursor       : pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition   : color $transition-fast, border-color $transition-fast;
+    display      : flex;
+    align-items  : center;
+    gap          : $space-2;
+
+    &:hover {
+        color: $color-text;
+    }
+
+    &--active {
+        color        : $color-primary;
+        border-color : $color-primary;
+    }
+}
+
+.admin-tab__count {
+    background   : $color-surface-alt;
+    border-radius: $radius-sm;
+    padding      : 1px 6px;
+    font-size    : $font-size-xs;
+    color        : $color-text-muted;
+}
+
+.admin-panel {
+    &--hidden { display: none; }
+}
+
+// ── Tabel ────────────────────────────────────────────────────────────────────
+.admin-table {
+    width          : 100%;
+    border-collapse: collapse;
+    font-size      : $font-size-sm;
+    background     : $color-surface;
+    border         : 1px solid $color-border;
+    border-radius  : $radius-lg;
+    overflow       : hidden;
+
+    thead {
+        background: $color-surface-alt;
+
+        th {
+            padding    : $space-3 $space-4;
+            text-align : left;
+            font-weight: 600;
+            color      : $color-text-muted;
+            white-space: nowrap;
+        }
+    }
+
+    tbody tr {
+        border-top: 1px solid $color-border;
+        transition: background $transition-fast;
+
+        &:hover { background: $color-surface-alt; }
+    }
+
+    td {
+        padding: $space-3 $space-4;
+        vertical-align: middle;
+    }
+
+    &__muted  { color: $color-text-muted; }
+    &__center { text-align: center; }
+
+    &__actions {
+        display: flex;
+        align-items: center;
+        gap: $space-2;
+    }
+
+    &__progress {
+        min-width: 120px;
+    }
+
+    &__row--inactief {
+        opacity: 0.5;
+    }
+}
+
+// ── Status dot ───────────────────────────────────────────────────────────────
+.status-dot {
+    display    : inline-flex;
+    align-items: center;
+    gap        : $space-1;
+    font-size  : $font-size-xs;
+    font-weight: 500;
+
+    &::before {
+        content      : '';
+        display      : inline-block;
+        width        : 7px;
+        height       : 7px;
+        border-radius: 50%;
+    }
+
+    &--actief::before   { background: $color-success; }
+    &--inactief::before { background: $color-danger; }
+}
+
+// ── Tag (jij) ─────────────────────────────────────────────────────────────────
+.tag {
+    display      : inline-block;
+    padding      : 1px 6px;
+    border-radius: $radius-sm;
+    font-size    : $font-size-xs;
+    font-weight  : 500;
+
+    &--jij {
+        background: $color-primary-soft;
+        color     : $color-primary;
+    }
+}
+
+// ── Inline form (rol dropdown) ────────────────────────────────────────────────
+.inline-form {
+    display: inline-flex;
+}
+
+.select-inline {
+    font-size    : $font-size-xs;
+    padding      : $space-1 $space-2;
+    border       : 1px solid $color-border;
+    border-radius: $radius-sm;
+    background   : $color-surface;
+    color        : $color-text;
+    cursor       : pointer;
+
+    &:hover { border-color: $color-border-strong; }
+}
+
+// ── Succes knop ───────────────────────────────────────────────────────────────
+.btn--success {
+    background  : $color-success;
+    color       : #fff;
+    border-color: $color-success;
+
+    &:hover {
+        background  : color.adjust($color-success, $lightness: -8%);
+        border-color: color.adjust($color-success, $lightness: -8%);
+    }
+}
+
+// ── 403 pagina ────────────────────────────────────────────────────────────────
+.admin-forbidden {
+    text-align: center;
+    padding   : $space-12;
+
+    h1 { margin-bottom: $space-4; }
+    p  { color: $color-text-muted; margin-bottom: $space-6; }
+}

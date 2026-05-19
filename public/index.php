@@ -13,6 +13,8 @@ use App\Core\Router;
 use App\Controllers\AuthController;
 use App\Controllers\TaskController;
 use App\Controllers\ProjectController;
+use App\Controllers\AdminController;
+use App\Controllers\ProfielController;
 
 // ---------------------------------------------------------------------------
 // Autoloader (PSR-4 voor de namespace App\)
@@ -68,10 +70,12 @@ session_start();
 // ---------------------------------------------------------------------------
 // Routing
 // ---------------------------------------------------------------------------
-$router = new Router();
+$router   = new Router();
 $auth     = new AuthController();
 $tasks    = new TaskController();
 $projects = new ProjectController();
+$admin    = new AdminController();
+$profiel  = new ProfielController();
 
 $router->get ('/',          fn() => header('Location: ' . base_url(empty($_SESSION['user_id']) ? '/login' : '/dashboard')));
 
@@ -89,7 +93,14 @@ $router->post('/tasks/delete',       fn() => $tasks->delete());
 
 $router->post('/projects',           fn() => $projects->store());
 $router->post('/projects/update',    fn() => $projects->update());
-$router->post('/projects/delete',    fn() => $projects->delete());
+$router->post('/projects/delete',          fn() => $projects->delete());
+
+$router->get ('/admin',                    fn() => $admin->index());
+$router->post('/admin/gebruiker/rol',      fn() => $admin->updateRol());
+$router->post('/admin/gebruiker/toggle',   fn() => $admin->toggleActief());
+
+$router->get ('/profiel',                  fn() => $profiel->show());
+$router->post('/profiel/wachtwoord',       fn() => $profiel->updatePassword());
 
 $router->dispatch(
     $_SERVER['REQUEST_METHOD'] ?? 'GET',

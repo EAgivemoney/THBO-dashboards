@@ -339,3 +339,157 @@
         border-color: color.adjust($color-danger, $lightness: -8%);
     }
 }
+
+/* ── Filterbalk ───────────────────────────────────────────── */
+.filter-bar {
+    display    : flex;
+    align-items: flex-end;
+    gap        : $space-4;
+    margin-bottom: $space-5;
+    flex-wrap  : wrap;
+}
+
+.filter-bar__group {
+    display       : flex;
+    flex-direction: column;
+    gap           : $space-1;
+}
+
+.filter-bar__label {
+    font-size  : $font-size-xs;
+    font-weight: 600;
+    color      : $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-bar__select {
+    padding      : $space-2 $space-3;
+    border       : 1px solid $color-border;
+    border-radius: $radius-md;
+    font-size    : $font-size-sm;
+    color        : $color-text;
+    background   : $color-surface;
+    cursor       : pointer;
+    min-width    : 160px;
+    transition   : border-color $transition-fast;
+
+    &:hover { border-color: $color-border-strong; }
+    &:focus {
+        outline     : none;
+        border-color: $color-primary;
+        box-shadow  : 0 0 0 3px rgba($color-primary, 0.12);
+    }
+}
+
+.filter-bar__reset {
+    padding      : $space-2 $space-4;
+    border       : 1px solid $color-border;
+    border-radius: $radius-md;
+    font-size    : $font-size-sm;
+    background   : none;
+    color        : $color-text-muted;
+    cursor       : pointer;
+    transition   : color $transition-fast, border-color $transition-fast;
+
+    &:hover {
+        color       : $color-danger;
+        border-color: $color-danger;
+    }
+}
+
+/* ── Profielpagina ───────────────────────────────────────── */
+.profiel {
+    max-width : 520px;
+    margin    : 0 auto;
+    padding   : $space-8 $space-6;
+    display   : flex;
+    flex-direction: column;
+    gap       : $space-4;
+}
+
+.profiel__head {
+    display        : flex;
+    align-items    : flex-start;
+    justify-content: space-between;
+    gap            : $space-4;
+    margin-bottom  : $space-2;
+}
+
+.profiel__title {
+    font-size    : $font-size-xl;
+    font-weight  : 700;
+    margin-bottom: $space-1;
+}
+
+.profiel__subtitle {
+    font-size: $font-size-sm;
+    color    : $color-text-muted;
+}
+
+.profiel__card {
+    background   : $color-surface;
+    border       : 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding      : $space-6;
+}
+
+.profiel__card-title {
+    font-size    : $font-size-lg;
+    font-weight  : 600;
+    margin-bottom: $space-5;
+}
+
+.profiel__avatar {
+    width        : 56px;
+    height       : 56px;
+    border-radius: 50%;
+    background   : $color-primary;
+    color        : #fff;
+    font-size    : $font-size-xl;
+    font-weight  : 700;
+    display      : flex;
+    align-items  : center;
+    justify-content: center;
+    margin-bottom: $space-5;
+}
+
+.profiel__info {
+    display       : flex;
+    flex-direction: column;
+    gap           : $space-3;
+    margin-bottom : $space-5;
+}
+
+.profiel__info-rij {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+    padding-bottom : $space-3;
+    border-bottom  : 1px solid $color-border;
+
+    &:last-child { border-bottom: none; padding-bottom: 0; }
+}
+
+.profiel__info-label {
+    font-size  : $font-size-sm;
+    color      : $color-text-muted;
+    font-weight: 500;
+}
+
+.profiel__info-waarde {
+    font-size  : $font-size-sm;
+    font-weight: 500;
+    color      : $color-text;
+}
+
+.profiel__card-footer {
+    padding-top: $space-4;
+    border-top : 1px solid $color-border;
+}
+
+.profiel__form-actions {
+    display: flex;
+    gap    : $space-3;
+    margin-top: $space-4;
+}

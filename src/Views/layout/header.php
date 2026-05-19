@@ -22,6 +22,13 @@
                 <?php if (!empty($_SESSION['user_id'])): ?>
                     <span class="topbar__user">Hoi, <?= htmlspecialchars($_SESSION['user_naam'] ?? '') ?></span>
                     <a class="btn btn--ghost" href="<?= base_url('/dashboard') ?>">Dashboard</a>
+                    <a class="btn btn--ghost" href="<?= base_url('/profiel') ?>">Mijn profiel</a>
+                    <?php if (in_array((int)($_SESSION['user_rol'] ?? 0), [2, 3], true)): ?>
+                        <a class="btn btn--ghost<?= (int)($_SESSION['user_rol'] ?? 0) === 3 ? ' btn--admin-eigenaar' : '' ?>"
+                           href="<?= base_url('/admin') ?>">
+                            <?= (int)($_SESSION['user_rol'] ?? 0) === 3 ? '★ ' : '' ?>Admin panel
+                        </a>
+                    <?php endif; ?>
                     <a class="btn btn--ghost" href="<?= base_url('/logout') ?>">Uitloggen</a>
                 <?php else: ?>
                     <a class="btn btn--ghost"   href="<?= base_url('/login') ?>">Inloggen</a>

@@ -91,3 +91,14 @@
 
     &__meta { color: $color-text-subtle; }
 }
+
+// Eigenaar admin knop — iets meer opvallend dan gewone ghost
+.btn--admin-eigenaar {
+    border-color: #d97706;
+    color       : #d97706;
+
+    &:hover {
+        background  : #fef3c7;
+        border-color: #d97706;
+    }
+}

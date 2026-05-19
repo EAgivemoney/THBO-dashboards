@@ -231,3 +231,71 @@
         }, DELAY);
     });
 })();
+
+/* ── Filteren op project / prioriteit ────────────────────── */
+(function () {
+    var selProject   = document.getElementById('filter-project');
+    var selPrioriteit = document.getElementById('filter-prioriteit');
+    var btnReset     = document.getElementById('filter-reset');
+
+    if (!selProject || !selPrioriteit) return;
+
+    function applyFilters() {
+        var projectVal   = selProject.value;
+        var prioriteitVal = selPrioriteit.value;
+        var actief       = projectVal !== '' || prioriteitVal !== '';
+
+        // Reset knop tonen/verbergen
+        if (btnReset) btnReset.hidden = !actief;
+
+        document.querySelectorAll('.kanban__col').forEach(function (col) {
+            var zichtbaar = 0;
+
+            col.querySelectorAll('.card').forEach(function (card) {
+                var matchProject    = projectVal     === '' || card.dataset.projectId  === projectVal;
+                var matchPrioriteit = prioriteitVal  === '' || card.dataset.prioriteit === prioriteitVal;
+                var tonen           = matchProject && matchPrioriteit;
+
+                card.style.display = tonen ? '' : 'none';
+                if (tonen) zichtbaar++;
+            });
+
+            var totaalKaarten    = col.querySelectorAll('.card').length;
+
+            // Originele "Geen taken in deze kolom." — toon alleen als er écht geen kaarten zijn
+            var origineel = col.querySelector('.kanban__empty:not(.kanban__empty--filter)');
+            if (origineel) {
+                origineel.hidden = totaalKaarten > 0;
+            }
+
+            // Filter melding — toon alleen als er wél kaarten zijn maar geen zichtbare
+            var filterMelding = col.querySelector('.kanban__empty--filter');
+            if (totaalKaarten > 0 && zichtbaar === 0) {
+                if (!filterMelding) {
+                    filterMelding = document.createElement('p');
+                    filterMelding.className = 'kanban__empty kanban__empty--filter';
+                    filterMelding.textContent = 'Geen taken met dit filter.';
+                    col.querySelector('.kanban__list').appendChild(filterMelding);
+                }
+                filterMelding.hidden = false;
+            } else if (filterMelding) {
+                filterMelding.hidden = true;
+            }
+
+            // Kolomteller bijwerken naar zichtbare kaarten
+            var teller = col.querySelector('.kanban__count');
+            if (teller) teller.textContent = zichtbaar;
+        });
+    }
+
+    selProject.addEventListener('change', applyFilters);
+    selPrioriteit.addEventListener('change', applyFilters);
+
+    if (btnReset) {
+        btnReset.addEventListener('click', function () {
+            selProject.value    = '';
+            selPrioriteit.value = '';
+            applyFilters();
+        });
+    }
+})();

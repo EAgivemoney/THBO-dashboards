@@ -33,6 +33,31 @@ $prioLabels = [
         <div class="alert alert--error"><ul><?php foreach ($errors as $err): ?><li><?= htmlspecialchars($err) ?></li><?php endforeach; ?></ul></div>
     <?php endif; ?>
 
+    <!-- Filterbalk -->
+    <div class="filter-bar">
+        <div class="filter-bar__group">
+            <label class="filter-bar__label" for="filter-project">Project</label>
+            <select class="filter-bar__select" id="filter-project">
+                <option value="">Alle projecten</option>
+                <?php foreach ($projects as $p): ?>
+                    <option value="<?= (int) $p['Id'] ?>"><?= htmlspecialchars($p['Titel']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="filter-bar__group">
+            <label class="filter-bar__label" for="filter-prioriteit">Prioriteit</label>
+            <select class="filter-bar__select" id="filter-prioriteit">
+                <option value="">Alle prioriteiten</option>
+                <option value="1">1 — Hoogst</option>
+                <option value="2">2 — Hoog</option>
+                <option value="3">3 — Normaal</option>
+                <option value="4">4 — Laag</option>
+                <option value="5">5 — Laagst</option>
+            </select>
+        </div>
+        <button class="filter-bar__reset" id="filter-reset" hidden>Filters wissen</button>
+    </div>
+
     <div class="kanban">
         <?php foreach ($kolommen as $statusId => $info): ?>
             <div class="kanban__col" data-status-id="<?= $statusId ?>" data-slug="<?= $info['slug'] ?>">
