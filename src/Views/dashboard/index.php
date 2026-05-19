@@ -20,7 +20,10 @@ $prioLabels = [
             <h1 class="dashboard__title">Mijn taken</h1>
             <p class="dashboard__subtitle">Sleep taken tussen kolommen om hun status te wijzigen.</p>
         </div>
-        <button type="button" class="btn btn--primary" data-open="task-modal">+ Nieuwe taak</button>
+        <div class="dashboard__actions">
+            <button type="button" class="btn btn--ghost" data-open="project-modal">&#128193; Projecten beheren</button>
+            <button type="button" class="btn btn--primary" data-open="task-modal">+ Nieuwe taak</button>
+        </div>
     </header>
 
     <?php if ($flash): ?>
@@ -171,6 +174,113 @@ $prioLabels = [
             </label>
             <div class="modal__actions">
                 <button type="button" class="btn btn--ghost" data-close="edit-modal">Annuleren</button>
+                <button type="submit" class="btn btn--primary">Opslaan</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal: projecten beheren -->
+<div class="modal" id="project-modal" hidden>
+    <div class="modal__backdrop" data-close="project-modal"></div>
+    <div class="modal__panel modal__panel--wide" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+        <header class="modal__head">
+            <h2 id="project-modal-title" class="modal__title">Projecten beheren</h2>
+            <button type="button" class="modal__close" data-close="project-modal" aria-label="Sluiten">&times;</button>
+        </header>
+
+        <!-- Bestaande projecten -->
+        <div class="project-list">
+            <?php if (empty($projectDetails)): ?>
+                <p class="project-list__empty">Nog geen projecten. Maak er een aan hieronder.</p>
+            <?php else: ?>
+                <?php foreach ($projectDetails as $proj): ?>
+                    <div class="project-item" data-project-id="<?= (int) $proj['Id'] ?>">
+                        <div class="project-item__info">
+                            <div class="project-item__header">
+                                <strong class="project-item__name"><?= htmlspecialchars($proj['Titel']) ?></strong>
+                                <div class="project-item__actions">
+                                    <button type="button"
+                                            class="btn btn--ghost btn--sm"
+                                            data-open="edit-project-modal"
+                                            data-project-id="<?= (int) $proj['Id'] ?>"
+                                            data-project-titel="<?= htmlspecialchars($proj['Titel'], ENT_QUOTES) ?>"
+                                            data-project-beschrijving="<?= htmlspecialchars($proj['Beschrijving'] ?? '', ENT_QUOTES) ?>">
+                                        Bewerken
+                                    </button>
+                                    <form action="<?= base_url('/projects/delete') ?>" method="post"
+                                          onsubmit="return confirm('Project &quot;<?= htmlspecialchars($proj['Titel'], ENT_QUOTES) ?>&quot; verwijderen? Alle taken worden ook verwijderd.');">
+                                        <input type="hidden" name="project_id" value="<?= (int) $proj['Id'] ?>">
+                                        <button type="submit" class="btn btn--danger btn--sm">Verwijderen</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <?php if (!empty($proj['Beschrijving'])): ?>
+                                <span class="project-item__desc"><?= htmlspecialchars($proj['Beschrijving']) ?></span>
+                            <?php endif; ?>
+                            <?php
+                                $voortgang  = (int) $proj['Voortgang'];
+                                $totaal     = (int) $proj['AantakTaken'];
+                                $voltooid   = (int) $proj['AantalVoltooid'];
+                            ?>
+                            <div class="project-item__progress">
+                                <div class="progress">
+                                    <div class="progress__bar" style="width: <?= $voortgang ?>%"></div>
+                                </div>
+                                <span class="progress__label">
+                                    <?php if ($totaal === 0): ?>
+                                        Geen taken
+                                    <?php else: ?>
+                                        <?= $voltooid ?> / <?= $totaal ?> taken voltooid &mdash; <?= $voortgang ?>%
+                                    <?php endif; ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <hr class="modal__divider">
+
+        <!-- Nieuw project formulier -->
+        <h3 class="modal__subtitle">Nieuw project aanmaken</h3>
+        <form action="<?= base_url('/projects') ?>" method="post" class="form">
+            <label class="form__field">
+                <span class="form__label">Projectnaam <span aria-hidden="true">*</span></span>
+                <input type="text" name="titel" required maxlength="120" placeholder="bijv. Website redesign">
+            </label>
+            <label class="form__field">
+                <span class="form__label">Beschrijving</span>
+                <textarea name="beschrijving" rows="2" placeholder="Optionele omschrijving..."></textarea>
+            </label>
+            <div class="modal__actions">
+                <button type="button" class="btn btn--ghost" data-close="project-modal">Annuleren</button>
+                <button type="submit" class="btn btn--primary">Project aanmaken</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: project bewerken -->
+<div class="modal" id="edit-project-modal" hidden>
+    <div class="modal__backdrop" data-close="edit-project-modal"></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="edit-project-modal-title">
+        <header class="modal__head">
+            <h2 id="edit-project-modal-title" class="modal__title">Project bewerken</h2>
+            <button type="button" class="modal__close" data-close="edit-project-modal" aria-label="Sluiten">&times;</button>
+        </header>
+        <form action="<?= base_url('/projects/update') ?>" method="post" class="form">
+            <input type="hidden" name="project_id" id="edit-project-id">
+            <label class="form__field">
+                <span class="form__label">Projectnaam <span aria-hidden="true">*</span></span>
+                <input type="text" name="titel" id="edit-project-titel" required maxlength="120">
+            </label>
+            <label class="form__field">
+                <span class="form__label">Beschrijving</span>
+                <textarea name="beschrijving" id="edit-project-beschrijving" rows="2"></textarea>
+            </label>
+            <div class="modal__actions">
+                <button type="button" class="btn btn--ghost" data-close="edit-project-modal">Annuleren</button>
                 <button type="submit" class="btn btn--primary">Opslaan</button>
             </div>
         </form>

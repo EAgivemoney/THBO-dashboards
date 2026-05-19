@@ -12,6 +12,7 @@ declare(strict_types=1);
 use App\Core\Router;
 use App\Controllers\AuthController;
 use App\Controllers\TaskController;
+use App\Controllers\ProjectController;
 
 // ---------------------------------------------------------------------------
 // Autoloader (PSR-4 voor de namespace App\)
@@ -68,8 +69,9 @@ session_start();
 // Routing
 // ---------------------------------------------------------------------------
 $router = new Router();
-$auth   = new AuthController();
-$tasks  = new TaskController();
+$auth     = new AuthController();
+$tasks    = new TaskController();
+$projects = new ProjectController();
 
 $router->get ('/',          fn() => header('Location: ' . base_url(empty($_SESSION['user_id']) ? '/login' : '/dashboard')));
 
@@ -84,6 +86,10 @@ $router->post('/tasks',              fn() => $tasks->store());
 $router->post('/tasks/update',       fn() => $tasks->update());
 $router->post('/tasks/status/',      fn() => $tasks->updateStatus());
 $router->post('/tasks/delete',       fn() => $tasks->delete());
+
+$router->post('/projects',           fn() => $projects->store());
+$router->post('/projects/update',    fn() => $projects->update());
+$router->post('/projects/delete',    fn() => $projects->delete());
 
 $router->dispatch(
     $_SERVER['REQUEST_METHOD'] ?? 'GET',

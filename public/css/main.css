@@ -1,3 +1,4 @@
+@charset "UTF-8";
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -301,6 +302,14 @@ img {
   border: 1px solid transparent;
   margin-bottom: 1rem;
   font-size: 0.875rem;
+  transition: opacity 0.5s ease, margin 0.5s ease, padding 0.5s ease;
+}
+.alert--hiding {
+  opacity: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
 }
 .alert ul {
   margin: 0;
@@ -634,6 +643,122 @@ img {
 }
 .card__prio.prio--5 {
   background: #94a3b8;
+}
+
+/* ── Project beheer ──────────────────────────────────────── */
+.dashboard__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.project-list__empty {
+  color: var(--color-text-muted, #6b7280);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.project-item {
+  padding: 1rem;
+  background: var(--color-surface, #f9fafb);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+}
+
+.project-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.project-item__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.project-item__desc {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #6b7280);
+  margin-bottom: 0.5rem;
+}
+
+.project-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.project-item__progress {
+  margin-top: 0.5rem;
+}
+
+/* ── Voortgangsbalk ──────────────────────────────────────── */
+.progress {
+  width: 100%;
+  height: 6px;
+  background: var(--color-border, #e5e7eb);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background: #4f46e5;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.progress__label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-text-muted, #6b7280);
+  margin-top: 0.25rem;
+}
+
+/* ── Gedeeld ─────────────────────────────────────────────── */
+.modal__divider {
+  border: none;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  margin: 1.25rem 0;
+}
+
+.modal__subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.modal__panel--wide {
+  max-width: 600px;
+  width: 100%;
+}
+
+.btn--sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.btn--danger {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+.btn--danger:hover {
+  background: rgb(187.0333333333, 30.1666666667, 30.1666666667);
+  border-color: rgb(187.0333333333, 30.1666666667, 30.1666666667);
 }
 
 /*# sourceMappingURL=main.css.map */

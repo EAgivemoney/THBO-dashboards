@@ -25,6 +25,9 @@ class TaskController
         $title    = 'Dashboard';
         $board    = Task::boardForUser($userId);
         $projects = Task::projectsForUser($userId);
+
+        // Uitgebreide projectlijst met taakaantallen (voor het project-beheer modal)
+        $projectDetails = \App\Models\Project::forUser($userId);
         $flash    = $_SESSION['flash']  ?? null;
         $errors   = $_SESSION['errors'] ?? [];
         unset($_SESSION['flash'], $_SESSION['errors']);

@@ -138,6 +138,7 @@
             }
 
             updateColumnCounts();
+            updateProjectProgress(draggedCard.dataset.projectId);
 
             fetch(BASE + '/tasks/status', {
                 method: 'POST',
@@ -163,4 +164,70 @@
             if (c) c.textContent = n;
         });
     }
+
+    function updateProjectProgress(projectId) {
+        if (!projectId) return;
+
+        var alleKaarten = document.querySelectorAll('.card[data-project-id="' + projectId + '"]');
+        var totaal      = alleKaarten.length;
+
+        var doneCol   = document.querySelector('.kanban__col[data-status-id="3"]');
+        var voltooid  = doneCol
+            ? doneCol.querySelectorAll('.card[data-project-id="' + projectId + '"]').length
+            : 0;
+
+        var percentage = totaal > 0 ? Math.round((voltooid / totaal) * 100) : 0;
+
+        // Balk en label in de project modal bijwerken
+        var projectItem = document.querySelector('.project-item[data-project-id="' + projectId + '"]');
+        if (!projectItem) return;
+
+        var balk  = projectItem.querySelector('.progress__bar');
+        var label = projectItem.querySelector('.progress__label');
+
+        if (balk)  balk.style.width = percentage + '%';
+        if (label) label.textContent = totaal === 0
+            ? 'Geen taken'
+            : voltooid + ' / ' + totaal + ' taken voltooid \u2014 ' + percentage + '%';
+    }
+})();
+/* ── Project bewerken modal ──────────────────────────────── */
+(function () {
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-open="edit-project-modal"]');
+        if (!btn) return;
+
+        var modal     = document.getElementById('edit-project-modal');
+        var idInput   = document.getElementById('edit-project-id');
+        var titelInput     = document.getElementById('edit-project-titel');
+        var beschrInput    = document.getElementById('edit-project-beschrijving');
+
+        if (idInput)        idInput.value        = btn.dataset.projectId          || '';
+        if (titelInput)     titelInput.value     = btn.dataset.projectTitel       || '';
+        if (beschrInput)    beschrInput.value    = btn.dataset.projectBeschrijving || '';
+
+        if (modal) {
+            // Sluit het project-overzicht modal eerst
+            var overzicht = document.getElementById('project-modal');
+            if (overzicht) overzicht.hidden = true;
+
+            modal.hidden = false;
+            if (titelInput) titelInput.focus();
+        }
+    });
+})();
+
+/* ── Auto-dismiss alerts ─────────────────────────────────── */
+(function () {
+    var DELAY    = 4000; // ms voor het starten van de fade
+    var DURATION = 500;  // moet overeenkomen met de CSS transitie
+
+    document.querySelectorAll('.alert').forEach(function (el) {
+        setTimeout(function () {
+            el.classList.add('alert--hiding');
+            setTimeout(function () {
+                el.remove();
+            }, DURATION);
+        }, DELAY);
+    });
 })();

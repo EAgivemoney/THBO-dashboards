@@ -11,6 +11,15 @@
     border       : 1px solid transparent;
     margin-bottom: $space-4;
     font-size    : $font-size-sm;
+    transition   : opacity 0.5s ease, margin 0.5s ease, padding 0.5s ease;
+
+    &--hiding {
+        opacity        : 0;
+        margin-bottom  : 0;
+        padding-top    : 0;
+        padding-bottom : 0;
+        pointer-events : none;
+    }
 
     ul {
         margin     : 0;

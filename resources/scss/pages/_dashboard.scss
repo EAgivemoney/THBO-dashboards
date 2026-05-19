@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../abstracts/variables' as *;
 @use '../abstracts/mixins' as *;
 
@@ -219,5 +220,122 @@
         &.prio--3 { background: $color-prio-3; }
         &.prio--4 { background: $color-prio-4; }
         &.prio--5 { background: $color-prio-5; }
+    }
+}
+
+/* ── Project beheer ──────────────────────────────────────── */
+.dashboard__actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.project-list__empty {
+    color: var(--color-text-muted, #6b7280);
+    font-size: .9rem;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.project-item {
+    padding      : $space-4;
+    background   : var(--color-surface, #f9fafb);
+    border       : 1px solid var(--color-border, #e5e7eb);
+    border-radius: $radius-md;
+}
+
+.project-item__header {
+    display        : flex;
+    align-items    : center;
+    justify-content: space-between;
+    gap            : $space-3;
+    margin-bottom  : $space-1;
+}
+
+.project-item__name {
+    font-size  : .95rem;
+    font-weight: 600;
+}
+
+.project-item__desc {
+    display    : block;
+    font-size  : .8rem;
+    color      : var(--color-text-muted, #6b7280);
+    margin-bottom: $space-2;
+}
+
+.project-item__actions {
+    display    : flex;
+    align-items: center;
+    gap        : $space-2;
+    flex-shrink: 0;
+}
+
+.project-item__progress {
+    margin-top: $space-2;
+}
+
+/* ── Voortgangsbalk ──────────────────────────────────────── */
+.progress {
+    width        : 100%;
+    height       : 6px;
+    background   : var(--color-border, #e5e7eb);
+    border-radius: 999px;
+    overflow     : hidden;
+}
+
+.progress__bar {
+    height       : 100%;
+    background   : $color-primary;
+    border-radius: 999px;
+    transition   : width 0.4s ease;
+}
+
+.progress__label {
+    display    : block;
+    font-size  : .72rem;
+    color      : var(--color-text-muted, #6b7280);
+    margin-top : $space-1;
+}
+
+/* ── Gedeeld ─────────────────────────────────────────────── */
+.modal__divider {
+    border    : none;
+    border-top: 1px solid var(--color-border, #e5e7eb);
+    margin    : $space-5 0;
+}
+
+.modal__subtitle {
+    font-size    : 1rem;
+    font-weight  : 600;
+    margin-bottom: $space-3;
+}
+
+.modal__panel--wide {
+    max-width: 600px;
+    width    : 100%;
+}
+
+.btn--sm {
+    padding  : $space-1 $space-3;
+    font-size: .8rem;
+}
+
+.btn--danger {
+    background  : $color-danger;
+    color       : #fff;
+    border-color: $color-danger;
+
+    &:hover {
+        background  : color.adjust($color-danger, $lightness: -8%);
+        border-color: color.adjust($color-danger, $lightness: -8%);
     }
 }
