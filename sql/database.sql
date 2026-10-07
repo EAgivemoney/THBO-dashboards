@@ -134,7 +134,7 @@ SELECT
 			,g.VolledigeNaam AS Eigenaar
 			,COUNT(t.Id) AS AantakTaken
 			,SUM(t.StatusId = 3) AS AantalVoltooid
-FROM		Project P
+FROM		Project p
 INNER JOIN	Gebruiker g ON g.Id = p.GebruikerId
 LEFT JOIN	Taak t ON t.ProjectId = p.Id
 GROUP BY	p.Id, p.Titel, g.VolledigeNaam;

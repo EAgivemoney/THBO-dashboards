@@ -29,6 +29,8 @@
         width        : 100%;
         max-width    : 540px;
         padding      : $space-6;
+        max-height   : calc(100vh - #{2 * $space-6});
+        overflow-y   : auto;
         animation    : modal-pop $transition-base;
     }
 

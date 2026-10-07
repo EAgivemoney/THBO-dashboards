@@ -183,6 +183,6 @@ class Task
         ]);
         $call->closeCursor();
 
-        return (int) $pdo->lastInsertId();
+        return (int) $pdo->query('SELECT LAST_INSERT_ID()')->fetchColumn();
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 
+use App\Core\Logger;
 use App\Models\Project;
 
 class ProjectController
@@ -37,6 +38,7 @@ class ProjectController
                 Project::create($userId, $titel, $beschrijving ?: null);
                 $_SESSION['flash'] = 'Project aangemaakt.';
             } catch (\Exception $e) {
+                Logger::exception($e, 'Project aanmaken mislukt', ['titel' => $titel]);
                 // SP_ProjectAanmaken gooit een fout bij een dubbele naam
                 $_SESSION['errors'] = ['Er bestaat al een project met die naam.'];
             }
@@ -67,6 +69,7 @@ class ProjectController
                 $ok = Project::update($projectId, $titel, $beschrijving ?: null, $userId);
                 $_SESSION['flash'] = $ok ? 'Project bijgewerkt.' : 'Project niet gevonden.';
             } catch (\Exception $e) {
+                Logger::exception($e, 'Project bijwerken mislukt', ['project_id' => $projectId]);
                 $_SESSION['errors'] = ['Er bestaat al een project met die naam.'];
             }
         }

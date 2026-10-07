@@ -236,6 +236,10 @@
     flex-direction: column;
     gap: .5rem;
     margin-bottom: .5rem;
+    max-height: 40vh;      // scrollbar zodra er veel projecten zijn
+    overflow-y: auto;
+    padding-right: .25rem;
+    overscroll-behavior: contain;
 }
 
 .project-list__empty {
@@ -246,6 +250,7 @@
 }
 
 .project-item {
+    flex-shrink  : 0;
     padding      : $space-4;
     background   : var(--color-surface, #f9fafb);
     border       : 1px solid var(--color-border, #e5e7eb);
