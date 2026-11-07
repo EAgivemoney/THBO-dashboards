@@ -92,7 +92,7 @@
     &__meta { color: $color-text-subtle; }
 }
 
-// Eigenaar admin knop — iets meer opvallend dan gewone ghost
+// Owner admin button — a bit more eye-catching than a regular ghost button
 .btn--admin-eigenaar {
     border-color: #d97706;
     color       : #d97706;
@@ -101,4 +101,123 @@
         background  : #fef3c7;
         border-color: #d97706;
     }
+}
+
+// ============================================================================
+// Language picker: dropdown (details/summary, also works without JavaScript)
+// The menu scrolls when there are more languages than fit in $lang-menu-max-height.
+// ============================================================================
+
+$lang-menu-max-height: 8.5rem;   // about 3 languages visible; higher = more languages without scrolling
+
+.lang-switch {
+    position: relative;
+
+    // Button that opens the menu
+    &__button {
+        display    : inline-flex;
+        align-items: center;
+        gap        : $space-2;
+        list-style : none;           // no default triangle
+        cursor     : pointer;
+        user-select: none;
+        white-space: nowrap;
+
+        &::-webkit-details-marker { display: none; }
+        &::marker                 { content: ''; }
+
+        // Arrow that rotates when the menu is open
+        &::after {
+            content     : '';
+            width       : 6px;
+            height      : 6px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform   : translateY(-2px) rotate(45deg);
+            transition  : transform 150ms ease;
+        }
+    }
+
+    &[open] &__button::after {
+        transform: translateY(1px) rotate(-135deg);
+    }
+
+    // The dropdown menu itself
+    &__menu {
+        position      : absolute;
+        top           : calc(100% + #{$space-2});
+        right         : 0;
+        z-index       : 60;
+        display       : flex;
+        flex-direction: column;
+        gap           : 2px;
+        box-sizing    : border-box;
+        width         : 200px;
+        max-width     : calc(100vw - #{2 * $space-4});
+        max-height    : $lang-menu-max-height;
+        overflow-y    : auto;        // the scrollbar
+        overscroll-behavior: contain;
+        padding       : $space-2;
+        background    : $color-surface;
+        border        : 1px solid $color-border;
+        border-radius : $radius-md;
+        box-shadow    : $shadow-md;
+
+        // Thin, unobtrusive scrollbar
+        scrollbar-width: thin;
+        scrollbar-color: $color-border-strong transparent;
+
+        &::-webkit-scrollbar       { width: 8px; }
+        &::-webkit-scrollbar-track { background: transparent; }
+        &::-webkit-scrollbar-thumb {
+            background   : $color-border-strong;
+            border-radius: 999px;
+            border       : 2px solid $color-surface;   // keeps the bar away from the edge
+        }
+        &::-webkit-scrollbar-thumb:hover { background: $color-text-subtle; }
+    }
+
+    // A single language in the list
+    &__option {
+        flex           : 0 0 auto;
+        display        : flex;
+        align-items    : center;
+        justify-content: space-between;
+        gap            : $space-4;
+        width          : 100%;
+        box-sizing     : border-box;
+        padding        : $space-2 $space-3;
+        font-family    : inherit;
+        font-size      : $font-size-sm;
+        line-height    : 1.4;
+        color          : $color-text;
+        text-align     : left;
+        background     : transparent;
+        border         : 0;
+        border-radius  : $radius-sm;
+        cursor         : pointer;
+        transition     : background-color 120ms ease;
+
+        &:hover,
+        &:focus-visible {
+            background: $color-surface-alt;
+            outline   : none;
+        }
+
+        &--active {
+            font-weight: 600;
+            color      : $color-primary;
+            background : $color-primary-soft;
+
+            &:hover { background: $color-primary-soft; }
+        }
+    }
+
+    &__code {
+        font-size  : $font-size-xs;
+        font-weight: 600;
+        color      : $color-text-subtle;
+    }
+
+    &__option--active &__code { color: $color-primary; }
 }

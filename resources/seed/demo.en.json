@@ -1,0 +1,212 @@
+{
+    "_info": "Demo data for Admin panel -> Load demo data. Read by src/Core/Seeder.php. status: todo | doing | done. deadline_days: number of days from today (negative = overdue, omit = no deadline). priority: 1 (high) to 5 (low).",
+    "projects": [
+        {
+            "title": "Portfolio website",
+            "description": "Personal portfolio site for internship applications.",
+            "tasks": [
+                {
+                    "title": "Create wireframes",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -10
+                },
+                {
+                    "title": "Build the homepage",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 3
+                },
+                {
+                    "title": "Write the project pages",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 10
+                },
+                {
+                    "title": "Arrange hosting",
+                    "priority": 4,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Research methods",
+            "description": "Assignments and exam preparation for the Research Methods course.",
+            "tasks": [
+                {
+                    "title": "Collect literature",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -14
+                },
+                {
+                    "title": "Draft the survey",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 2
+                },
+                {
+                    "title": "Analyse the results",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 12
+                },
+                {
+                    "title": "Hand in the report",
+                    "priority": 1,
+                    "status": "todo",
+                    "deadline_days": 21
+                }
+            ]
+        },
+        {
+            "title": "Database design",
+            "description": "ERD, normalisation and stored procedures for the database project.",
+            "tasks": [
+                {
+                    "title": "Draw the ERD",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -7
+                },
+                {
+                    "title": "Normalise the tables",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 4
+                },
+                {
+                    "title": "Write stored procedures",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 9
+                }
+            ]
+        },
+        {
+            "title": "Finding an internship",
+            "description": "Find an internship for next semester.",
+            "tasks": [
+                {
+                    "title": "Update my CV",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -5
+                },
+                {
+                    "title": "Write the cover letter",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Approach companies",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 7
+                },
+                {
+                    "title": "Schedule interviews",
+                    "priority": 3,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Scrum group project",
+            "description": "Scrum project with four teammates.",
+            "tasks": [
+                {
+                    "title": "Fill the product backlog",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -12
+                },
+                {
+                    "title": "Plan sprint 1",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -6
+                },
+                {
+                    "title": "Prepare the sprint review",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 5
+                },
+                {
+                    "title": "Hold the retrospective",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 6
+                }
+            ]
+        },
+        {
+            "title": "Networking lab",
+            "description": "Lab assignments on routing and subnetting.",
+            "tasks": [
+                {
+                    "title": "Practise subnetting",
+                    "priority": 3,
+                    "status": "doing",
+                    "deadline_days": 8
+                },
+                {
+                    "title": "Finish the Packet Tracer lab",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 15
+                }
+            ]
+        },
+        {
+            "title": "Household",
+            "description": "Things that also need to get done.",
+            "tasks": [
+                {
+                    "title": "Do the groceries",
+                    "priority": 4,
+                    "status": "todo",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Tidy up my room",
+                    "priority": 5,
+                    "status": "todo"
+                },
+                {
+                    "title": "Pay the rent",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -2
+                }
+            ]
+        },
+        {
+            "title": "Preparing graduation",
+            "description": "First exploration of the graduation research.",
+            "tasks": [
+                {
+                    "title": "Choose a topic",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 14
+                },
+                {
+                    "title": "Contact a supervisor",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 18
+                },
+                {
+                    "title": "Draw up a plan",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 25
+                }
+            ]
+        }
+    ]
+}

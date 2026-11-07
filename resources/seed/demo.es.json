@@ -1,0 +1,212 @@
+{
+    "_info": "Demo data for Admin panel -> Load demo data. Read by src/Core/Seeder.php. status: todo | doing | done. deadline_days: number of days from today (negative = overdue, omit = no deadline). priority: 1 (high) to 5 (low).",
+    "projects": [
+        {
+            "title": "Sitio web de portafolio",
+            "description": "Sitio personal de portafolio para solicitudes de prácticas.",
+            "tasks": [
+                {
+                    "title": "Crear wireframes",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -10
+                },
+                {
+                    "title": "Construir la página de inicio",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 3
+                },
+                {
+                    "title": "Redactar las páginas de proyectos",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 10
+                },
+                {
+                    "title": "Contratar el alojamiento",
+                    "priority": 4,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Métodos de investigación",
+            "description": "Trabajos y preparación del examen de la asignatura Métodos de investigación.",
+            "tasks": [
+                {
+                    "title": "Reunir bibliografía",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -14
+                },
+                {
+                    "title": "Elaborar la encuesta",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 2
+                },
+                {
+                    "title": "Analizar los resultados",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 12
+                },
+                {
+                    "title": "Entregar el informe",
+                    "priority": 1,
+                    "status": "todo",
+                    "deadline_days": 21
+                }
+            ]
+        },
+        {
+            "title": "Diseño de bases de datos",
+            "description": "ERD, normalización y procedimientos almacenados para el proyecto de bases de datos.",
+            "tasks": [
+                {
+                    "title": "Dibujar el ERD",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -7
+                },
+                {
+                    "title": "Normalizar las tablas",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 4
+                },
+                {
+                    "title": "Escribir procedimientos almacenados",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 9
+                }
+            ]
+        },
+        {
+            "title": "Buscar prácticas",
+            "description": "Encontrar un puesto de prácticas para el próximo semestre.",
+            "tasks": [
+                {
+                    "title": "Actualizar el CV",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -5
+                },
+                {
+                    "title": "Escribir la carta de motivación",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Contactar con empresas",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 7
+                },
+                {
+                    "title": "Programar entrevistas",
+                    "priority": 3,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Proyecto grupal Scrum",
+            "description": "Proyecto Scrum con cuatro compañeros.",
+            "tasks": [
+                {
+                    "title": "Completar el product backlog",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -12
+                },
+                {
+                    "title": "Planificar el sprint 1",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -6
+                },
+                {
+                    "title": "Preparar la revisión del sprint",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 5
+                },
+                {
+                    "title": "Hacer la retrospectiva",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 6
+                }
+            ]
+        },
+        {
+            "title": "Prácticas de redes",
+            "description": "Prácticas de laboratorio sobre enrutamiento y subredes.",
+            "tasks": [
+                {
+                    "title": "Practicar subredes",
+                    "priority": 3,
+                    "status": "doing",
+                    "deadline_days": 8
+                },
+                {
+                    "title": "Terminar el laboratorio de Packet Tracer",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 15
+                }
+            ]
+        },
+        {
+            "title": "Tareas del hogar",
+            "description": "Cosas que también hay que hacer.",
+            "tasks": [
+                {
+                    "title": "Hacer la compra",
+                    "priority": 4,
+                    "status": "todo",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Ordenar la habitación",
+                    "priority": 5,
+                    "status": "todo"
+                },
+                {
+                    "title": "Pagar el alquiler",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -2
+                }
+            ]
+        },
+        {
+            "title": "Preparar el trabajo de fin de grado",
+            "description": "Primera exploración de la investigación de fin de grado.",
+            "tasks": [
+                {
+                    "title": "Elegir un tema",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 14
+                },
+                {
+                    "title": "Contactar con un tutor",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 18
+                },
+                {
+                    "title": "Elaborar una planificación",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 25
+                }
+            ]
+        }
+    ]
+}

@@ -1,6 +1,8 @@
 <?php
 namespace App\Controllers;
 
+use App\Core\Activity;
+use App\Core\Lang;
 use App\Core\Logger;
 use App\Models\Project;
 
@@ -16,31 +18,32 @@ class ProjectController
     }
 
     /**
-     * POST /projects — nieuw project aanmaken.
+     * POST /projects — create a new project.
      */
     public function store(): void
     {
-        $userId       = $this->requireLogin();
-        $titel        = trim($_POST['titel']        ?? '');
-        $beschrijving = trim($_POST['beschrijving'] ?? '');
+        $userId      = $this->requireLogin();
+        $title       = trim($_POST['title']       ?? '');
+        $description = trim($_POST['description'] ?? '');
 
         $errors = [];
-        if ($titel === '') {
-            $errors[] = 'Projectnaam is verplicht.';
-        } elseif (mb_strlen($titel) > 120) {
-            $errors[] = 'Projectnaam mag maximaal 120 tekens bevatten.';
+        if ($title === '') {
+            $errors[] = Lang::get('project.name_required');
+        } elseif (mb_strlen($title) > 120) {
+            $errors[] = Lang::get('project.name_max');
         }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
         } else {
             try {
-                Project::create($userId, $titel, $beschrijving ?: null);
-                $_SESSION['flash'] = 'Project aangemaakt.';
+                $newProjectId = Project::create($userId, $title, $description ?: null);
+                Activity::log('project.created', ['project_id' => $newProjectId, 'title' => Activity::short($title)]);
+                $_SESSION['flash'] = Lang::get('project.created');
             } catch (\Exception $e) {
-                Logger::exception($e, 'Project aanmaken mislukt', ['titel' => $titel]);
-                // SP_ProjectAanmaken gooit een fout bij een dubbele naam
-                $_SESSION['errors'] = ['Er bestaat al een project met die naam.'];
+                Logger::exception($e, 'Failed to create project', ['title' => $title]);
+                // SP_ProjectAanmaken throws an error for a duplicate name
+                $_SESSION['errors'] = [Lang::get('project.exists')];
             }
         }
 
@@ -49,28 +52,31 @@ class ProjectController
     }
 
     /**
-     * POST /projects/update — bestaand project bijwerken.
+     * POST /projects/update — update an existing project.
      */
     public function update(): void
     {
-        $userId       = $this->requireLogin();
-        $projectId    = (int)  ($_POST['project_id']   ?? 0);
-        $titel        = trim(   $_POST['titel']         ?? '');
-        $beschrijving = trim(   $_POST['beschrijving']  ?? '');
+        $userId      = $this->requireLogin();
+        $projectId   = (int) ($_POST['project_id'] ?? 0);
+        $title       = trim($_POST['title']        ?? '');
+        $description = trim($_POST['description']  ?? '');
 
         $errors = [];
-        if ($projectId <= 0)   { $errors[] = 'Ongeldig project.'; }
-        if ($titel === '')     { $errors[] = 'Projectnaam is verplicht.'; }
+        if ($projectId <= 0) { $errors[] = Lang::get('project.invalid'); }
+        if ($title === '')   { $errors[] = Lang::get('project.name_required'); }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
         } else {
             try {
-                $ok = Project::update($projectId, $titel, $beschrijving ?: null, $userId);
-                $_SESSION['flash'] = $ok ? 'Project bijgewerkt.' : 'Project niet gevonden.';
+                $ok = Project::update($projectId, $title, $description ?: null, $userId);
+                if ($ok) {
+                    Activity::log('project.updated', ['project_id' => $projectId, 'title' => Activity::short($title)]);
+                }
+                $_SESSION['flash'] = $ok ? Lang::get('project.updated') : Lang::get('project.not_found');
             } catch (\Exception $e) {
-                Logger::exception($e, 'Project bijwerken mislukt', ['project_id' => $projectId]);
-                $_SESSION['errors'] = ['Er bestaat al een project met die naam.'];
+                Logger::exception($e, 'Failed to update project', ['project_id' => $projectId]);
+                $_SESSION['errors'] = [Lang::get('project.exists')];
             }
         }
 
@@ -79,17 +85,27 @@ class ProjectController
     }
 
     /**
-     * POST /projects/delete — project soft-deleten.
+     * POST /projects/delete — soft delete a project.
+     * 
+     * A user always keeps at least one project: the last remaining project
+     * cannot be deleted until another one has been created.
      */
     public function delete(): void
     {
         $userId    = $this->requireLogin();
         $projectId = (int) ($_POST['project_id'] ?? 0);
 
+        if (Project::countActiveForUser($userId) <= 1) {
+            $_SESSION['errors'] = [Lang::get('project.last_one')];
+            header('Location: ' . base_url('/dashboard'));
+            exit;
+        }
+
         if ($projectId > 0 && Project::softDelete($projectId, $userId)) {
-            $_SESSION['flash'] = 'Project verwijderd.';
+            Activity::log('project.deleted', ['project_id' => $projectId]);
+            $_SESSION['flash'] = Lang::get('project.deleted');
         } else {
-            $_SESSION['errors'] = ['Kon het project niet verwijderen.'];
+            $_SESSION['errors'] = [Lang::get('project.delete_failed')];
         }
 
         header('Location: ' . base_url('/dashboard'));

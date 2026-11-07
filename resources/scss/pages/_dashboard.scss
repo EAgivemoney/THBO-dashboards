@@ -31,7 +31,7 @@
 }
 
 // ============================================================================
-// Kanban-bord
+// Kanban board
 // ============================================================================
 
 .kanban {
@@ -52,7 +52,7 @@
         flex-direction: column;
         min-height    : 200px;
 
-        // Gekleurd lijntje boven elke kolom dat per status verschilt
+        // Colored line above each column that differs per status
         position      : relative;
         padding-top   : $space-5;
 
@@ -122,7 +122,7 @@
 }
 
 // ============================================================================
-// Taakkaartje
+// Task card
 // ============================================================================
 
 .card {
@@ -206,7 +206,7 @@
         &:hover { color: $color-danger; background: $color-danger-soft; }
     }
 
-    // Prioriteit-badges
+    // Priority badges
     &__prio {
         font-size    : $font-size-xs;
         font-weight  : 600;
@@ -223,7 +223,7 @@
     }
 }
 
-/* ── Project beheer ──────────────────────────────────────── */
+/* ── Project management ──────────────────────────────────────── */
 .dashboard__actions {
     display: flex;
     align-items: center;
@@ -236,7 +236,7 @@
     flex-direction: column;
     gap: .5rem;
     margin-bottom: .5rem;
-    max-height: 40vh;      // scrollbar zodra er veel projecten zijn
+    max-height: 40vh;      // scrollbar as soon as there are many projects
     overflow-y: auto;
     padding-right: .25rem;
     overscroll-behavior: contain;
@@ -247,6 +247,13 @@
     font-size: .9rem;
     text-align: center;
     padding: 1rem 0;
+}
+
+.project-list__hint {
+    margin: .25rem 0 0;
+    color: var(--color-text-muted, #6b7280);
+    font-size: .8rem;
+    line-height: 1.4;
 }
 
 .project-item {
@@ -288,7 +295,7 @@
     margin-top: $space-2;
 }
 
-/* ── Voortgangsbalk ──────────────────────────────────────── */
+/* ── Progress bar ──────────────────────────────────────── */
 .progress {
     width        : 100%;
     height       : 6px;
@@ -311,7 +318,7 @@
     margin-top : $space-1;
 }
 
-/* ── Gedeeld ─────────────────────────────────────────────── */
+/* ── Shared ─────────────────────────────────────────────── */
 .modal__divider {
     border    : none;
     border-top: 1px solid var(--color-border, #e5e7eb);
@@ -345,7 +352,7 @@
     }
 }
 
-/* ── Filterbalk ───────────────────────────────────────────── */
+/* ── Filter bar ───────────────────────────────────────────── */
 .filter-bar {
     display    : flex;
     align-items: flex-end;
@@ -403,8 +410,8 @@
     }
 }
 
-/* ── Profielpagina ───────────────────────────────────────── */
-.profiel {
+/* ── Profile page ───────────────────────────────────────── */
+.profile {
     max-width : 520px;
     margin    : 0 auto;
     padding   : $space-8 $space-6;
@@ -413,7 +420,7 @@
     gap       : $space-4;
 }
 
-.profiel__head {
+.profile__head {
     display        : flex;
     align-items    : flex-start;
     justify-content: space-between;
@@ -421,31 +428,31 @@
     margin-bottom  : $space-2;
 }
 
-.profiel__title {
+.profile__title {
     font-size    : $font-size-xl;
     font-weight  : 700;
     margin-bottom: $space-1;
 }
 
-.profiel__subtitle {
+.profile__subtitle {
     font-size: $font-size-sm;
     color    : $color-text-muted;
 }
 
-.profiel__card {
+.profile__card {
     background   : $color-surface;
     border       : 1px solid $color-border;
     border-radius: $radius-lg;
     padding      : $space-6;
 }
 
-.profiel__card-title {
+.profile__card-title {
     font-size    : $font-size-lg;
     font-weight  : 600;
     margin-bottom: $space-5;
 }
 
-.profiel__avatar {
+.profile__avatar {
     width        : 56px;
     height       : 56px;
     border-radius: 50%;
@@ -459,14 +466,14 @@
     margin-bottom: $space-5;
 }
 
-.profiel__info {
+.profile__info {
     display       : flex;
     flex-direction: column;
     gap           : $space-3;
     margin-bottom : $space-5;
 }
 
-.profiel__info-rij {
+.profile__info-row {
     display        : flex;
     justify-content: space-between;
     align-items    : center;
@@ -476,24 +483,24 @@
     &:last-child { border-bottom: none; padding-bottom: 0; }
 }
 
-.profiel__info-label {
+.profile__info-label {
     font-size  : $font-size-sm;
     color      : $color-text-muted;
     font-weight: 500;
 }
 
-.profiel__info-waarde {
+.profile__info-value {
     font-size  : $font-size-sm;
     font-weight: 500;
     color      : $color-text;
 }
 
-.profiel__card-footer {
+.profile__card-footer {
     padding-top: $space-4;
     border-top : 1px solid $color-border;
 }
 
-.profiel__form-actions {
+.profile__form-actions {
     display: flex;
     gap    : $space-3;
     margin-top: $space-4;

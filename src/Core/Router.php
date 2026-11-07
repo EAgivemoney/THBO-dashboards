@@ -2,16 +2,16 @@
 namespace App\Core;
 
 /**
- * Heel kleine routerklasse.
+ * Very small router.
  * 
- * Ondersteunt GET en POST routes. URI's worden gematcht op letterlijke paden,
- * dus geen route-parameters - voor dit dashboard volstaat dat ruim.
+ * Supports GET and POST routes. URIs are matched against literal paths, so
+ * there are no route parameters - plenty for this dashboard.
  */
 class Router
 {
     /** @var array<string, array<string, callable>> */
     private array $routes = [
-        'GET' => [],
+        'GET' =>  [],
         'POST' => [],
     ];
 
@@ -36,14 +36,16 @@ class Router
         }
 
         http_response_code(404);
-        echo '<h1>404 — Pagina niet gevonden</h1>';
-        echo '<p>De URL <code>' . htmlspecialchars($path) . '</code> bestaat niet.</p>';
+        echo '<h1>' . htmlspecialchars(Lang::get('errors.not_found_title')) . '</h1>';
+        // Escape the language-file text first, then put the (escaped) URL in <code>.
+        $text = htmlspecialchars(Lang::get('errors.not_found_text', ['path' => '@@PATH@@']));
+        echo '<p>' . str_replace('@@PATH@@', '<code>' . htmlspecialchars($path) . '</code>', $text) . '</p>';
     }
 
     private function normalize(string $uri): string
     {
-        // Verwijder de /public prefix als de site via WAMP onder een submap draait
-        // (bijv. http://localhost/THBO-dashboards/public/dashboard).
+        // Strip the /public prefix when the site runs from a subfolder under WAMP
+        // (e.g. http://localhost/THBO-dashboards/public/dashboard).
         $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
         if ($scriptDir !== '' && str_starts_with($uri, $scriptDir)) {
             $uri = substr($uri, strlen($scriptDir));

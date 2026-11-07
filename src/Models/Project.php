@@ -5,31 +5,32 @@ use App\Core\Database;
 use PDO;
 
 /**
- * Project model — werkt tegen de tabel `Project`.
+ * Project model — works against the `Project` table.
  *
- * Bevat methoden voor aanmaken, bijwerken, verwijderen (soft-delete) en
- * ophalen van projecten die bij een specifieke gebruiker horen.
+ * Contains methods to create, update, delete (soft delete) and fetch the
+ * projects that belong to a specific user. The Dutch column names are mapped
+ * to English keys with an alias (Titel → title, Beschrijving → description, ...).
  */
 class Project
 {
     /**
-     * Geeft alle actieve projecten terug voor een gebruiker,
-     * inclusief het aantal taken per status en de voortgang (0–100)
-     * via de database-functie FN_ProjectVoortgang.
+     * Returns all active projects for a user, including the number of tasks
+     * per status and the progress (0–100) from the database function
+     * FN_ProjectVoortgang.
      *
-     * @return array<int, array{Id:int,Titel:string,Beschrijving:string|null,AantakTaken:int,AantalVoltooid:int,Voortgang:int}>
+     * @return array<int, array{id:int,title:string,description:string|null,task_count:int,completed_count:int,progress:int}>
      */
     public static function forUser(int $userId): array
     {
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
             'SELECT
-                p.Id,
-                p.Titel,
-                p.Beschrijving,
-                COUNT(t.Id)              AS AantakTaken,
-                SUM(t.StatusId = 3)      AS AantalVoltooid,
-                FN_ProjectVoortgang(p.Id) AS Voortgang
+                p.Id                      AS id,
+                p.Titel                   AS title,
+                p.Beschrijving            AS description,
+                COUNT(t.Id)               AS task_count,
+                SUM(t.StatusId = 3)       AS completed_count,
+                FN_ProjectVoortgang(p.Id) AS progress
              FROM   Project p
              LEFT JOIN Taak t ON t.ProjectId = p.Id AND t.IsActief = 1
              WHERE  p.GebruikerId = :uid AND p.IsActief = 1
@@ -41,17 +42,29 @@ class Project
     }
 
     /**
-     * Maakt een nieuw project aan via de stored procedure SP_ProjectAanmaken.
-     * Geeft het Id van het nieuwe project terug.
+     * Number of active (not deleted) projects of a user.
      */
-    public static function create(int $userId, string $titel, ?string $beschrijving): int
+    public static function countActiveForUser(int $userId): int
     {
         $pdo  = Database::connection();
-        $call = $pdo->prepare('CALL SP_ProjectAanmaken(:uid, :titel, :beschr)');
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM Project WHERE GebruikerId = :uid AND IsActief = 1');
+        $stmt->execute([':uid' => $userId]);
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * Creates a new project through the stored procedure SP_ProjectAanmaken.
+     * Returns the id of the new project.
+     */
+    public static function create(int $userId, string $title, ?string $description): int
+    {
+        $pdo  = Database::connection();
+        $call = $pdo->prepare('CALL SP_ProjectAanmaken(:uid, :title, :description)');
         $call->execute([
-            ':uid'    => $userId,
-            ':titel'  => $titel,
-            ':beschr' => $beschrijving ?: null,
+            ':uid'         => $userId,
+            ':title'       => $title,
+            ':description' => $description ?: null,
         ]);
         $call->closeCursor();
 
@@ -59,32 +72,32 @@ class Project
     }
 
     /**
-     * Werkt een bestaand project bij.
-     * Controleert ook of het project van de opgegeven gebruiker is.
+     * Updates an existing project.
+     * Also checks that the project belongs to the given user.
      */
-    public static function update(int $projectId, string $titel, ?string $beschrijving, int $userId): bool
+    public static function update(int $projectId, string $title, ?string $description, int $userId): bool
     {
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
             'UPDATE Project
-             SET    Titel        = :titel,
-                    Beschrijving = :beschr
+             SET    Titel        = :title,
+                    Beschrijving = :description
              WHERE  Id           = :id
                AND  GebruikerId  = :uid
                AND  IsActief     = 1'
         );
         $stmt->execute([
-            ':titel'  => $titel,
-            ':beschr' => $beschrijving ?: null,
-            ':id'     => $projectId,
-            ':uid'    => $userId,
+            ':title'       => $title,
+            ':description' => $description ?: null,
+            ':id'          => $projectId,
+            ':uid'         => $userId,
         ]);
         return $stmt->rowCount() > 0;
     }
 
     /**
-     * Soft-delete: zet IsActief op 0.
-     * Controleert ook eigenaarschap.
+     * Soft delete: sets IsActief to 0.
+     * Also checks ownership.
      */
     public static function softDelete(int $projectId, int $userId): bool
     {

@@ -5,11 +5,15 @@ use App\Core\Database;
 use PDO;
 
 /**
- * User model — werkt tegen de tabel `Gebruiker` uit sql/database.sql.
- * 
- * Belangrijke kolommen:
- *   Id, RolId, Voornaam, Tussenvoegsel, Achternaam, VolledigeNaam (generated),
- *   Email, WachtwoordHash, IsActief
+ * User model — works against the `Gebruiker` table from sql/database.sql.
+ *
+ * The database column names are Dutch; every query maps them to English
+ * snake_case keys with an alias, so the rest of the application never sees
+ * the Dutch names:
+ *   Id → id, RolId → role_id, Voornaam → first_name, Tussenvoegsel → name_prefix,
+ *   Achternaam → last_name, VolledigeNaam → full_name (generated column),
+ *   Email → email, WachtwoordHash → password_hash, IsActief → is_active,
+ *   AangemaaktOp → created_at
  */
 class User
 {
@@ -17,8 +21,15 @@ class User
     {
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
-            'SELECT Id, RolId, Voornaam, Tussenvoegsel, Achternaam, VolledigeNaam,
-                    Email, WachtwoordHash, IsActief
+            'SELECT Id            AS id,
+                    RolId         AS role_id,
+                    Voornaam      AS first_name,
+                    Tussenvoegsel AS name_prefix,
+                    Achternaam    AS last_name,
+                    VolledigeNaam AS full_name,
+                    Email         AS email,
+                    WachtwoordHash AS password_hash,
+                    IsActief      AS is_active
              FROM  Gebruiker
              WHERE Email = :email
              LIMIT 1'
@@ -32,11 +43,18 @@ class User
     {
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
-            'SELECT Id, RolId, Voornaam, Tussenvoegsel, Achternaam, VolledigeNaam,
-                    Email, IsActief, AangemaaktOp
-            FROM  Gebruiker
-            WHERE Id = :id
-            LIMIT 1'
+            'SELECT Id            AS id,
+                    RolId         AS role_id,
+                    Voornaam      AS first_name,
+                    Tussenvoegsel AS name_prefix,
+                    Achternaam    AS last_name,
+                    VolledigeNaam AS full_name,
+                    Email         AS email,
+                    IsActief      AS is_active,
+                    AangemaaktOp  AS created_at
+             FROM  Gebruiker
+             WHERE Id = :id
+             LIMIT 1'
         );
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,11 +62,11 @@ class User
     }
 
     /**
-     * Maakt een nieuwe gebruiker aan en geeft het nieuwe Id terug.
+     * Creates a new user and returns the new id.
      *
      * @param array{
-     *   voornaam:string, tussenvoegsel:?string, achternaam:string,
-     *   email:string, wachtwoord:string, rolId?:int
+     *   first_name:string, name_prefix:?string, last_name:string,
+     *   email:string, password:string, role_id?:int
      * } $data
      */
     public static function create(array $data): int
@@ -58,15 +76,15 @@ class User
             'INSERT INTO Gebruiker
                 (RolId, Voornaam, Tussenvoegsel, Achternaam, Email, WachtwoordHash)
              VALUES
-                (:rol, :vn, :tv, :an, :email, :hash)'
+                (:role, :first_name, :name_prefix, :last_name, :email, :hash)'
         );
         $stmt->execute([
-            ':rol'   => $data['rolId'] ?? 1, // 1 = gebruiker
-            ':vn'    => $data['voornaam'],
-            ':tv'    => $data['tussenvoegsel'] ?: null,
-            ':an'    => $data['achternaam'],
-            ':email' => $data['email'],
-            ':hash'  => password_hash($data['wachtwoord'], PASSWORD_DEFAULT),
+            ':role'        => $data['role_id'] ?? Admin::ROLE_USER,
+            ':first_name'  => $data['first_name'],
+            ':name_prefix' => $data['name_prefix'] ?: null,
+            ':last_name'   => $data['last_name'],
+            ':email'       => $data['email'],
+            ':hash'        => password_hash($data['password'], PASSWORD_DEFAULT),
         ]);
 
         return (int) $pdo->lastInsertId();
@@ -78,19 +96,19 @@ class User
     }
 
     /**
-     * Werkt het wachtwoord bij van een gebruiker.
-     * Geeft false terug als het huidige wachtwoord niet klopt.
+     * Updates a user's password.
+     * Returns false if the current password is wrong.
      */
-    public static function updatePassword(int $userId, string $huidig, string $nieuw): bool
+    public static function updatePassword(int $userId, string $currentPassword, string $newPassword): bool
     {
         $pdo  = Database::connection();
         $stmt = $pdo->prepare(
-            'SELECT WachtwoordHash FROM Gebruiker WHERE Id = :id AND IsActief = 1 LIMIT 1'
+            'SELECT WachtwoordHash AS password_hash FROM Gebruiker WHERE Id = :id AND IsActief = 1 LIMIT 1'
         );
         $stmt->execute([':id' => $userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$row || !password_verify($huidig, $row['WachtwoordHash'])) {
+        if (!$row || !password_verify($currentPassword, $row['password_hash'])) {
             return false;
         }
 
@@ -98,7 +116,7 @@ class User
             'UPDATE Gebruiker SET WachtwoordHash = :hash WHERE Id = :id'
         );
         $update->execute([
-            ':hash' => password_hash($nieuw, PASSWORD_DEFAULT),
+            ':hash' => password_hash($newPassword, PASSWORD_DEFAULT),
             ':id'   => $userId,
         ]);
 

@@ -52,6 +52,6 @@ button {
 
 img { max-width: 100%; display: block; }
 
-// Globale layout — main moet de footer naar onderen drukken
+// Globale layout — main has to push the footer to the bottom
 .app    { min-height: 100vh; display: flex; flex-direction: column; }
 .main   { flex: 1; padding: $space-8 $space-6; }

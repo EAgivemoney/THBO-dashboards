@@ -1,0 +1,212 @@
+{
+    "_info": "Demo data for Admin panel -> Load demo data. Read by src/Core/Seeder.php. status: todo | doing | done. deadline_days: number of days from today (negative = overdue, omit = no deadline). priority: 1 (high) to 5 (low).",
+    "projects": [
+        {
+            "title": "Site web portfolio",
+            "description": "Site portfolio personnel pour les candidatures de stage.",
+            "tasks": [
+                {
+                    "title": "Créer les maquettes",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -10
+                },
+                {
+                    "title": "Construire la page d'accueil",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 3
+                },
+                {
+                    "title": "Rédiger les pages de projets",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 10
+                },
+                {
+                    "title": "Organiser l'hébergement",
+                    "priority": 4,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Méthodes de recherche",
+            "description": "Travaux et préparation de l'examen du cours Méthodes de recherche.",
+            "tasks": [
+                {
+                    "title": "Rassembler la littérature",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -14
+                },
+                {
+                    "title": "Élaborer l'enquête",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 2
+                },
+                {
+                    "title": "Analyser les résultats",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 12
+                },
+                {
+                    "title": "Remettre le rapport",
+                    "priority": 1,
+                    "status": "todo",
+                    "deadline_days": 21
+                }
+            ]
+        },
+        {
+            "title": "Conception de base de données",
+            "description": "MCD, normalisation et procédures stockées pour le projet de base de données.",
+            "tasks": [
+                {
+                    "title": "Dessiner le MCD",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -7
+                },
+                {
+                    "title": "Normaliser les tables",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 4
+                },
+                {
+                    "title": "Écrire les procédures stockées",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 9
+                }
+            ]
+        },
+        {
+            "title": "Chercher un stage",
+            "description": "Trouver un stage pour le semestre prochain.",
+            "tasks": [
+                {
+                    "title": "Mettre à jour mon CV",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -5
+                },
+                {
+                    "title": "Rédiger la lettre de motivation",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Contacter des entreprises",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 7
+                },
+                {
+                    "title": "Planifier des entretiens",
+                    "priority": 3,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Projet de groupe Scrum",
+            "description": "Projet Scrum avec quatre coéquipiers.",
+            "tasks": [
+                {
+                    "title": "Remplir le product backlog",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -12
+                },
+                {
+                    "title": "Planifier le sprint 1",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -6
+                },
+                {
+                    "title": "Préparer la revue de sprint",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 5
+                },
+                {
+                    "title": "Animer la rétrospective",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 6
+                }
+            ]
+        },
+        {
+            "title": "TP réseaux",
+            "description": "Travaux pratiques sur le routage et le sous-réseautage.",
+            "tasks": [
+                {
+                    "title": "S'entraîner au sous-réseautage",
+                    "priority": 3,
+                    "status": "doing",
+                    "deadline_days": 8
+                },
+                {
+                    "title": "Terminer le TP Packet Tracer",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 15
+                }
+            ]
+        },
+        {
+            "title": "Tâches ménagères",
+            "description": "Choses qu'il faut aussi faire.",
+            "tasks": [
+                {
+                    "title": "Faire les courses",
+                    "priority": 4,
+                    "status": "todo",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Ranger ma chambre",
+                    "priority": 5,
+                    "status": "todo"
+                },
+                {
+                    "title": "Payer le loyer",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -2
+                }
+            ]
+        },
+        {
+            "title": "Préparer le mémoire de fin d'études",
+            "description": "Première exploration de la recherche de fin d'études.",
+            "tasks": [
+                {
+                    "title": "Choisir un sujet",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 14
+                },
+                {
+                    "title": "Contacter un encadrant",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 18
+                },
+                {
+                    "title": "Établir un planning",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 25
+                }
+            ]
+        }
+    ]
+}

@@ -1,14 +1,14 @@
 // ============================================================================
 // THBO Dashboards — entry point
 //
-// Compileer met:
+// Compile with:
 //   npm run sass
 //
-// Output: public/assets/css/main.css (zie package.json scripts.sass)
+// Output: public/css/main.css (see package.json scripts.sass)
 // ============================================================================
 
-// Het Inter-font wordt geladen via een <link> in src/Views/layout/header.php,
-// dus we hoeven hier niets te importeren.
+// The Inter font is loaded through a <link> in src/Views/layout/header.php,
+// so there is nothing to import here.
 
 // Base
 @use 'base/reset';

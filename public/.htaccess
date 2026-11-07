@@ -1,5 +1,5 @@
-# Stuur alle requests die niet naar een bestaand bestand of directory qijzen
-# door naar index.php. Vereist mod_rewrite (standaard aan in WAMP).
+# Send every request that does not point to an existing file or directory
+# to index.php. Requires mod_rewrite (enabled by default in WAMP).
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -10,5 +10,5 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# Bescherm tegen directory listing
+# Protect against directory listing
 Options -Indexes

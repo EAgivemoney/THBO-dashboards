@@ -1,7 +1,11 @@
 <?php
 namespace App\Controllers;
 
+use App\Core\Activity;
+use App\Core\Lang;
+use App\Models\Project;
 use App\Models\Task;
+use PDOException;
 
 class TaskController
 {
@@ -14,20 +18,33 @@ class TaskController
         return (int) $_SESSION['user_id'];
     }
 
+    /**
+     * Does the project belong to this user?
+     */
+    private function ownsProject(int $userId, int $projectId): bool
+    {
+        foreach (Task::projectsForUser($userId) as $project) {
+            if ((int) $project['id'] === $projectId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function dashboard(): void
     {
         $userId = $this->requireLogin();
 
-        // Zorg dat er minimaal één project is - anders is het bord leeg
-        // Bij de allereerste login en kun je nergens een taak aan koppelen
+        // Make sure there is at least one project - otherwise the board is empty
+        // and on the very first login there is nothing a task can be linked to.
         Task::ensureDefaultProject($userId);
 
-        $title    = 'Dashboard';
+        $title    = Lang::get('ui.dashboard.page_title');
         $board    = Task::boardForUser($userId);
         $projects = Task::projectsForUser($userId);
 
-        // Uitgebreide projectlijst met taakaantallen (voor het project-beheer modal)
-        $projectDetails = \App\Models\Project::forUser($userId);
+        // Extended project list with task counts (for the project management modal)
+        $projectDetails = Project::forUser($userId);
         $flash    = $_SESSION['flash']  ?? null;
         $errors   = $_SESSION['errors'] ?? [];
         unset($_SESSION['flash'], $_SESSION['errors']);
@@ -41,35 +58,38 @@ class TaskController
     {
         $userId = $this->requireLogin();
 
-        $titel        = trim($_POST['titel']        ?? '');
-        $beschrijving = trim($_POST['beschrijving'] ?? '');
-        $projectId    = (int) ($_POST['project_id'] ?? 0);
-        $prioriteit   = max(1, min(5, (int) ($_POST['prioriteit'] ?? 3)));
-        $deadline     = trim($_POST['deadline']     ?? '');
+        $title       = trim($_POST['title']       ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $projectId   = (int) ($_POST['project_id'] ?? 0);
+        $priority    = max(1, min(5, (int) ($_POST['priority'] ?? 3)));
+        $deadline    = trim($_POST['deadline']    ?? '');
 
         $errors = [];
-        if ($titel === '')     { $errors[] = 'Titel is verplicht.'; }
-        if ($projectId === 0)  { $errors[] = 'Kies een project.'; }
+        if ($title === '')     { $errors[] = Lang::get('task.title_required'); }
+        if ($projectId === 0)  { $errors[] = Lang::get('task.choose_project'); }
 
-        // Verifieer dat het project van deze gebruiker is.
-        if (!$errors) {
-            $owns = false;
-            foreach (Task::projectsForUser($userId) as $p) {
-                if ((int) $p['Id'] === $projectId) {
-                    $owns = true;
-                    break;
-                }
-            }
-            if (!$owns) {
-                $errors[] = 'Ongeldig project.';
-            }
+        // Verify that the project belongs to this user.
+        if (!$errors && !$this->ownsProject($userId, $projectId)) {
+            $errors[] = Lang::get('project.invalid');
         }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
         } else {
-            Task::create($projectId, $titel, $beschrijving, $prioriteit, $deadline);
-            $_SESSION['flash'] = 'Taak toegevoegd.';
+            try {
+                $taskId = Task::create($projectId, $title, $description, $priority, $deadline);
+                Activity::log('task.created', [
+                    'task_id'    => $taskId,
+                    'title'      => Activity::short($title),
+                    'project_id' => $projectId,
+                ]);
+                $_SESSION['flash'] = Lang::get('task.created');
+            } catch (PDOException $e) {
+                if (!Task::isDuplicate($e)) {
+                    throw $e;
+                }
+                $_SESSION['errors'] = [Lang::get('task.exists')];
+            }
         }
 
         header('Location: ' . base_url('/dashboard'));
@@ -77,8 +97,8 @@ class TaskController
     }
 
     /**
-     * AJAX endpoint — verplaatst een taak naar een andere kolom.
-     * Verwacht JSON: { "task_id": 1, "status_id": 2 }
+     * AJAX endpoint — moves a task to another column.
+     * Expects JSON: { "task_id": 1, "status_id": 2 }
      */
     public function updateStatus(): void
     {
@@ -86,7 +106,7 @@ class TaskController
 
         if (empty($_SESSION['user_id'])) {
             http_response_code(401);
-            echo json_encode(['ok' => false, 'error' => 'Niet ingelogd']);
+            echo json_encode(['ok' => false, 'error' => Lang::get('errors.not_logged_in')]);
             return;
         }
 
@@ -96,44 +116,62 @@ class TaskController
 
         if ($taskId <= 0 || $status <= 0) {
             http_response_code(422);
-            echo json_encode(['ok' => false, 'error' => 'Ongeldige invoer']);
+            echo json_encode(['ok' => false, 'error' => Lang::get('errors.invalid_input')]);
             return;
         }
 
         $ok = Task::updateStatus($taskId, $status, (int) $_SESSION['user_id']);
+        if ($ok) {
+            Activity::log('task.moved', [
+                'task_id' => $taskId,
+                'to'      => match ($status) {
+                    Task::STATUS_TODO  => 'todo',
+                    Task::STATUS_DOING => 'doing',
+                    Task::STATUS_DONE  => 'done',
+                    default            => (string) $status,
+                },
+            ]);
+        }
         echo json_encode(['ok' => $ok]);
     }
-
 
     public function update(): void
     {
         $userId = $this->requireLogin();
 
-        $taskId       = (int)   ($_POST['task_id']       ?? 0);
-        $titel        = trim(   $_POST['titel']          ?? '');
-        $beschrijving = trim(   $_POST['beschrijving']   ?? '');
-        $projectId    = (int)   ($_POST['project_id']    ?? 0);
-        $prioriteit   = max(1, min(5, (int) ($_POST['prioriteit'] ?? 3)));
-        $deadline     = trim(   $_POST['deadline']       ?? '');
+        $taskId      = (int) ($_POST['task_id']    ?? 0);
+        $title       = trim($_POST['title']        ?? '');
+        $description = trim($_POST['description']  ?? '');
+        $projectId   = (int) ($_POST['project_id'] ?? 0);
+        $priority    = max(1, min(5, (int) ($_POST['priority'] ?? 3)));
+        $deadline    = trim($_POST['deadline']     ?? '');
 
         $errors = [];
-        if ($taskId <= 0)     { $errors[] = 'Ongeldige taak.'; }
-        if ($titel === '')    { $errors[] = 'Titel is verplicht.'; }
-        if ($projectId === 0) { $errors[] = 'Kies een project.'; }
+        if ($taskId <= 0)     { $errors[] = Lang::get('task.invalid'); }
+        if ($title === '')    { $errors[] = Lang::get('task.title_required'); }
+        if ($projectId === 0) { $errors[] = Lang::get('task.choose_project'); }
 
-        if (!$errors) {
-            $owns = false;
-            foreach (Task::projectsForUser($userId) as $p) {
-                if ((int) $p['Id'] === $projectId) { $owns = true; break; }
-            }
-            if (!$owns) { $errors[] = 'Ongeldig project.'; }
+        if (!$errors && !$this->ownsProject($userId, $projectId)) {
+            $errors[] = Lang::get('project.invalid');
         }
 
         if ($errors) {
             $_SESSION['errors'] = $errors;
         } else {
-            Task::update($taskId, $projectId, $titel, $beschrijving ?: null, $prioriteit, $deadline ?: null, $userId);
-            $_SESSION['flash'] = 'Taak bijgewerkt.';
+            try {
+                Task::update($taskId, $projectId, $title, $description ?: null, $priority, $deadline ?: null, $userId);
+                Activity::log('task.updated', [
+                    'task_id'    => $taskId,
+                    'title'      => Activity::short($title),
+                    'project_id' => $projectId,
+                ]);
+                $_SESSION['flash'] = Lang::get('task.updated');
+            } catch (PDOException $e) {
+                if (!Task::isDuplicate($e)) {
+                    throw $e;
+                }
+                $_SESSION['errors'] = [Lang::get('task.exists')];
+            }
         }
 
         header('Location: ' . base_url('/dashboard'));
@@ -146,11 +184,13 @@ class TaskController
         $taskId = (int) ($_POST['task_id'] ?? 0);
 
         if ($taskId > 0 && Task::softDelete($taskId, $userId)) {
-            $_SESSION['flash'] = 'Taak verwijdered.';
+            Activity::log('task.deleted', ['task_id' => $taskId]);
+            $_SESSION['flash'] = Lang::get('task.deleted');
         } else {
-            $_SESSION['errors'] = ['Kon de taak niet verwijderen.'];
+            $_SESSION['errors'] = [Lang::get('task.delete_failed')];
         }
 
         header('Location: ' . base_url('/dashboard'));
+        exit;
     }
 }

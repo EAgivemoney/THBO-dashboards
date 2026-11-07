@@ -34,8 +34,8 @@
     color    : $color-text-muted;
 }
 
-// ── Rol badges ───────────────────────────────────────────────────────────────
-.rol-badge {
+// ── Role badges ───────────────────────────────────────────────────────────────
+.role-badge {
     display      : inline-block;
     padding      : 2px $space-2;
     border-radius: $radius-sm;
@@ -44,7 +44,7 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
 
-    &--eigenaar {
+    &--owner {
         background: color.adjust($color-warning, $lightness: 30%);
         color     : color.adjust($color-warning, $lightness: -15%);
     }
@@ -54,13 +54,13 @@
         color     : $color-primary;
     }
 
-    &--gebruiker {
+    &--user {
         background: $color-surface-alt;
         color     : $color-text-muted;
     }
 }
 
-// ── Statistieken ─────────────────────────────────────────────────────────────
+// ── Statistics ─────────────────────────────────────────────────────────────
 .admin-stats {
     display              : grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -83,7 +83,7 @@
     }
 }
 
-.stat-card__getal {
+.stat-card__number {
     font-size  : $font-size-xxl;
     font-weight: 700;
     color      : $color-text;
@@ -140,7 +140,7 @@
     &--hidden { display: none; }
 }
 
-// ── Tabel ────────────────────────────────────────────────────────────────────
+// ── Table ────────────────────────────────────────────────────────────────────
 .admin-table {
     width          : 100%;
     border-collapse: collapse;
@@ -187,7 +187,7 @@
         min-width: 120px;
     }
 
-    &__row--inactief {
+    &__row--inactive {
         opacity: 0.5;
     }
 }
@@ -208,11 +208,11 @@
         border-radius: 50%;
     }
 
-    &--actief::before   { background: $color-success; }
-    &--inactief::before { background: $color-danger; }
+    &--active::before   { background: $color-success; }
+    &--inactive::before { background: $color-danger; }
 }
 
-// ── Tag (jij) ─────────────────────────────────────────────────────────────────
+// ── Tag (you) ─────────────────────────────────────────────────────────────────
 .tag {
     display      : inline-block;
     padding      : 1px 6px;
@@ -220,13 +220,13 @@
     font-size    : $font-size-xs;
     font-weight  : 500;
 
-    &--jij {
+    &--you {
         background: $color-primary-soft;
         color     : $color-primary;
     }
 }
 
-// ── Inline form (rol dropdown) ────────────────────────────────────────────────
+// ── Inline form (role dropdown) ────────────────────────────────────────────────
 .inline-form {
     display: inline-flex;
 }
@@ -243,7 +243,7 @@
     &:hover { border-color: $color-border-strong; }
 }
 
-// ── Succes knop ───────────────────────────────────────────────────────────────
+// ── Success button ───────────────────────────────────────────────────────────────
 .btn--success {
     background  : $color-success;
     color       : #fff;
@@ -255,11 +255,184 @@
     }
 }
 
-// ── 403 pagina ────────────────────────────────────────────────────────────────
+// ── 403 page ────────────────────────────────────────────────────────────────
 .admin-forbidden {
     text-align: center;
     padding   : $space-12;
 
     h1 { margin-bottom: $space-4; }
     p  { color: $color-text-muted; margin-bottom: $space-6; }
+}
+
+// ============================================================================
+// Admin → Logs
+// ============================================================================
+
+.admin__actions {
+    display    : flex;
+    align-items: center;
+    gap        : $space-2;
+}
+
+a.admin-tab {
+    text-decoration: none;
+}
+
+.log-filters {
+    display      : flex;
+    flex-wrap    : wrap;
+    align-items  : flex-end;
+    gap          : $space-3;
+    margin-bottom: $space-4;
+    padding      : $space-4;
+    background   : $color-surface;
+    border       : 1px solid $color-border;
+    border-radius: $radius-lg;
+
+    &__field {
+        display       : flex;
+        flex-direction: column;
+        gap           : $space-1;
+        font-size     : $font-size-xs;
+        font-weight   : 500;
+        color         : $color-text-muted;
+
+        &--grow { flex: 1 1 200px; }
+    }
+
+    &__input {
+        font-size    : $font-size-sm;
+        padding      : 5px $space-3;
+        border       : 1px solid $color-border;
+        border-radius: $radius-sm;
+        background   : $color-surface;
+        color        : $color-text;
+
+        &:focus {
+            outline     : none;
+            border-color: $color-primary;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        gap    : $space-2;
+    }
+}
+
+.log-summary {
+    display      : flex;
+    flex-wrap    : wrap;
+    align-items  : center;
+    gap          : $space-3;
+    margin-bottom: $space-3;
+    font-size    : $font-size-sm;
+    color        : $color-text-muted;
+
+    &__size { margin-left: auto; font-size: $font-size-xs; }
+}
+
+.log-chip {
+    display        : inline-block;
+    padding        : 2px $space-2;
+    border-radius  : $radius-sm;
+    font-size      : $font-size-xs;
+    background     : $color-surface-alt;
+    border         : 1px solid $color-border;
+    color          : $color-text-muted;
+    text-decoration: none;
+
+    &:hover         { border-color: $color-border-strong; }
+    &--active       { border-color: $color-primary; color: $color-primary; }
+}
+
+.log-badge {
+    display      : inline-block;
+    padding      : 2px $space-2;
+    border-radius: $radius-sm;
+    font-size    : $font-size-xs;
+    font-weight  : 600;
+    background   : $color-surface-alt;
+    color        : $color-text-muted;
+
+    // Levels (error log)
+    &--error   { background: $color-danger-soft;  color: $color-danger; }
+    &--warning { background: $color-warning-soft; color: $color-warning; }
+    &--info    { background: $color-primary-soft; color: $color-primary; }
+    &--debug   { background: $color-surface-alt;  color: $color-text-muted; }
+
+    // Categories (activity log)
+    &--auth    { background: $color-primary-soft; color: $color-primary; }
+    &--task    { background: $color-success-soft; color: $color-success; }
+    &--project { background: $color-warning-soft; color: $color-warning; }
+    &--profile { background: $color-surface-alt;  color: $color-text-muted; }
+    &--admin   { background: $color-danger-soft;  color: $color-danger; }
+}
+
+.log-table-wrap {
+    overflow-x: auto;
+}
+
+.log-nowrap { white-space: nowrap; }
+
+.log-row--warn { background: $color-warning-soft; }
+
+.log-kv {
+    display     : inline-block;
+    margin-right: $space-3;
+
+    &__key {
+        color      : $color-text-subtle;
+        font-size  : $font-size-xs;
+    }
+}
+
+.log-message { word-break: break-word; }
+
+.log-url {
+    font-size  : $font-size-xs;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.log-details {
+    margin-top: $space-1;
+
+    summary {
+        cursor    : pointer;
+        font-size : $font-size-xs;
+        color     : $color-primary;
+    }
+
+    pre {
+        margin       : $space-2 0 0;
+        padding      : $space-3;
+        max-height   : 320px;
+        overflow     : auto;
+        background   : $color-surface-alt;
+        border       : 1px solid $color-border;
+        border-radius: $radius-sm;
+        font-size    : $font-size-xs;
+        line-height  : 1.5;
+        white-space  : pre;
+    }
+}
+
+.log-pager {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    gap            : $space-4;
+    margin-top     : $space-4;
+    font-size      : $font-size-sm;
+    color          : $color-text-muted;
+}
+
+.log-empty {
+    padding      : $space-8 $space-4;
+    text-align   : center;
+    color        : $color-text-muted;
+    font-size    : $font-size-sm;
+    background   : $color-surface;
+    border       : 1px dashed $color-border-strong;
+    border-radius: $radius-lg;
 }

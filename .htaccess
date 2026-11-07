@@ -1,5 +1,5 @@
-# Als iemand WAMP rechtstreeks op de project-root laat wijzen,
-# stuur alle traffic door naar /public/
+# If WAMP is pointed straight at the project root,
+# send all traffic to /public/
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteCond %{REQUEST_URI} !^/public

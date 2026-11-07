@@ -6,13 +6,12 @@ use PDOException;
 use RuntimeException;
 
 /**
- * Eenvoudige PDO singleton.
+ * Simple PDO singleton.
  * 
- * Gebruik:
+ * Usage:
  *   $pdo = Database::connection();
  *   $stmt = $pdo->prepare('SELECT * FROM Gebruiker WHERE Email = ?');
  */
-
 class Database
 {
     private static ?PDO $instance = null;
@@ -27,7 +26,7 @@ class Database
         $config = require dirname(__DIR__, 2) . '/config/database.php';
 
         $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
+            'mysql:host=%s;porty=%d;dbname=%s;charset=%s',
             $config['host'],
             $config['port'],
             $config['database'],
@@ -47,7 +46,7 @@ class Database
             );
         } catch (PDOException $e) {
             throw new RuntimeException(
-                'Kan geen verbinding maken met de database: ' . $e->getMessage(),
+                'Could not connect to the database: ' . $e->getMessage(),
                 (int) $e->getCode(),
                 $e
             );

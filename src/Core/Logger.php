@@ -8,33 +8,33 @@ use DateTimeZone;
 use Throwable;
 
 /**
- * Eenvoudige bestandslogger.
+ * Simple file logger.
  *
- * Schrijft naar storage/logs/app-YYYY-MM-DD.log (één bestand per dag).
+ * Writes to storage/logs/app-YYYY-MM-DD.log (one file per day).
  *
- * Gebruik:
- *   Logger::error('Project aanmaken mislukt', ['project' => $titel]);
- *   Logger::exception($e);                       // met stacktrace + vorige excepties
- *   Logger::warning('Sessie opgeruimd');
+ * Usage:
+ *   Logger::error('Failed to create project', ['project' => $title]);
+ *   Logger::exception($e);                       // with stack trace + previous exceptions
+ *   Logger::warning('Session cleared');
  *
- * Optionele .env-instellingen:
- *   LOG_LEVEL=debug            debug | info | warning | error  (standaard: debug)
- *   LOG_RETENTION_DAYS=30      logbestanden ouder dan dit worden verwijderd
+ * Optional .env settings:
+ *   LOG_LEVEL=debug            debug | info | warning | error  (default: debug)
+ *   LOG_RETENTION_DAYS=30      log files older than this are deleted
  *   LOG_TIMEZONE=Europe/Amsterdam
  *
- * De logger gooit zelf nooit een exception: als schrijven mislukt, gaat de
- * applicatie gewoon door.
+ * The logger itself never throws: if writing fails, the application
+ * simply carries on.
  */
 final class Logger
 {
     private const LEVELS = [
-        'debug'     => 100,
-        'info'      => 200,
-        'warning'   => 300,
-        'error'     => 400,
+        'debug'   => 100,
+        'info'    => 200,
+        'warning' => 300,
+        'error'   => 400,
     ];
 
-    /** Maximaal aantal stacktrace-regels per exception in het logbestand. */
+    /** Maximum number of stack trace lines per exception in the log file. */
     private const MAX_TRACE_FRAMES = 15;
 
     public static function debug(string $message, array $context = []): void
@@ -58,10 +58,10 @@ final class Logger
     }
 
     /**
-     * Logt een exception inclusief bestand/regel, stacktrace en eventuele
-     * vorige excepties (bijv. de PDOException achter een RuntimeException).
+     * Logs an exception including file/line, stack trace and any previous
+     * exceptions (e.g. the PDOException behind a RuntimeException).
      */
-    public static function exception(Throwable $e, string $message = 'Unhaled exception', array $context = []): void
+    public static function exception(Throwable $e, string $message = 'Unhandled exception', array $context = []): void
     {
         $details = [];
         $current = $e;
@@ -83,7 +83,7 @@ final class Logger
             $depth++;
         }
 
-        // Geen funcite-argumenten loggen: die kunnen wachtwoorden bevatten.
+        // Do not log function arguments: they can contain passwords.
         self::write('error', $message, $context, $details);
     }
 
@@ -101,21 +101,12 @@ final class Logger
                 return;
             }
 
-            $dir = self::logDir();
-            if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
-                return;
-            }
-
-            $now  = new DateTimeImmutable('now', new DateTimeZone(self::setting('LOG_TIMEZONE', 'Europe/Amsterdam')));
-            $file = $dir . '/app-' . $now->format('Y-m-d') . '.log';
-            $isNewFile = !is_file($file);
-
             $context = array_merge(self::requestContext(), $context);
             $json    = json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PARTIAL_OUTPUT_ON_ERROR);
 
             $entry = sprintf(
-                "[%s %s: %s %s\n]",
-                $now->format('Y-m-d H:i:s'),
+                "[%s] %s: %s %s\n",
+                self::now()->format('Y-m-d H:i:s'),
                 strtoupper($level),
                 str_replace(["\r", "\n"], ' ', $message),
                 $json === false ? '{}' : $json
@@ -124,14 +115,44 @@ final class Logger
                 $entry .= str_replace(["\r", "\n"], ' ', $line) . "\n";
             }
 
-            file_put_contents($file, $entry, FILE_APPEND | LOCK_EX);
+            self::append('app', $entry);
+        } catch (Throwable) {
+            // Logging must never crash the application.
+        }
+    }
 
-            // Eén keer per dag (bij het eerste bericht) oude logs opruimen.
+    /**
+     * Current time in the log time zone (LOG_TIMEZONE).
+     */
+    public static function now(): DateTimeImmutable
+    {
+        return new DateTimeImmutable('now', new DateTimeZone(self::setting('LOG_TIMEZONE', 'Europe/Amsterdam')));
+    }
+
+    /**
+     * Appends text to storage/logs/<channel>-YYYY-MM-DD.log.
+     * Also used by Activity (channel 'activity').
+     * Never throws.
+     */
+    public static function append(string $channel, string $text): void
+    {
+        try {
+            $dir = self::logDir();
+            if (!is_dir($dir) && !@mkdir($dir, 0775, true) && !is_dir($dir)) {
+                return;
+            }
+
+            $file      = $dir . '/' . $channel . '-' . self::now()->format('Y-m-d') . '.log';
+            $isNewFile = !is_file($file);
+
+            file_put_contents($file, $text, FILE_APPEND | LOCK_EX);
+
+            // Once a day (on the first entry), clean up old logs.
             if ($isNewFile) {
                 self::prune($dir);
             }
         } catch (Throwable) {
-            // Logging mag de applicatie nooit laten crashen.
+            // Logging must never crash the application.
         }
     }
 
@@ -155,7 +176,7 @@ final class Logger
         $days   = max(1, (int) self::setting('LOG_RETENTION_DAYS', '30'));
         $cutoff = time() - ($days * 86400);
 
-        foreach (glob($dir . '/app-*.log') ?: [] as $file) {
+        foreach (glob($dir . '/*-????-??-??.log') ?: [] as $file) {
             if (is_file($file) && filemtime($file) < $cutoff) {
                 @unlink($file);
             }
@@ -164,15 +185,15 @@ final class Logger
 
     private static function minLevel(): int
     {
-        return self::LEVELS[strtolower(SELF::setting('LOG_LEVEL', 'debug'))] ?? self::LEVELS['debug'];
+        return self::LEVELS[strtolower(self::setting('LOG_LEVEL', 'debug'))] ?? self::LEVELS['debug'];
     }
 
     private static function setting(string $key, string $default): string
     {
-        return function_exists('env') ? (string) env($key, $default): $default;
+        return function_exists('env') ? (string) env($key, $default) : $default;
     }
 
-    /** Toont paden relatief aan de projectmap, zodat logs leesbaar blijven. */
+    /** Shows paths relative to the project folder so logs stay readable. */
     private static function shortPath(string $path): string
     {
         $root = str_replace('\\', '/', dirname(__DIR__, 2)) . '/';

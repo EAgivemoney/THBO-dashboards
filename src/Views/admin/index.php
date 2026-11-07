@@ -1,15 +1,16 @@
 <?php
 /**
- * @var int    $rol        ROL_ADMIN (2) of ROL_EIGENAAR (3)
- * @var array  $stats      Systeembrede statistieken
- * @var array  $gebruikers Alle gebruikers
- * @var array  $projecten  Alle projecten
+ * @var int    $role     ROLE_ADMIN (2) or ROLE_OWNER (3)
+ * @var array  $stats    System-wide statistics
+ * @var array  $users    All users
+ * @var array  $projects All projects
  * @var ?string $flash
  * @var array  $errors
  */
+use App\Core\Lang;
 use App\Models\Admin;
 
-$isEigenaar = $rol === Admin::ROL_EIGENAAR;
+$isOwner = $role === Admin::ROLE_OWNER;
 ?>
 
 <section class="admin">
@@ -17,20 +18,29 @@ $isEigenaar = $rol === Admin::ROL_EIGENAAR;
     <header class="admin__head">
         <div>
             <h1 class="admin__title">
-                Admin panel
-                <?php if ($isEigenaar): ?>
-                    <span class="rol-badge rol-badge--eigenaar">Eigenaar</span>
+                <?= t('ui.admin.title') ?>
+                <?php if ($isOwner): ?>
+                    <span class="role-badge role-badge--owner"><?= htmlspecialchars(Admin::roleLabel(Admin::ROLE_OWNER)) ?></span>
                 <?php else: ?>
-                    <span class="rol-badge rol-badge--admin">Admin</span>
+                    <span class="role-badge role-badge--admin"><?= htmlspecialchars(Admin::roleLabel(Admin::ROLE_ADMIN)) ?></span>
                 <?php endif; ?>
             </h1>
             <p class="admin__subtitle">
-                <?= $isEigenaar
-                    ? 'Volledig beheer over alle gebruikers, rollen en projecten.'
-                    : 'Leesrechten op alle gebruikers en projecten.' ?>
+                <?= $isOwner
+                    ? t('ui.admin.owner_subtitle')
+                    : t('ui.admin.admin_subtitle') ?>
             </p>
         </div>
-        <a class="btn btn--ghost" href="<?= base_url('/dashboard') ?>">← Dashboard</a>
+        <div class="admin__actions">
+            <?php if ($isOwner): ?>
+                <form method="post" action="<?= base_url('/admin/demo') ?>"
+                      onsubmit="<?= t_confirm('ui.admin.confirm_demo') ?>">
+                    <button type="submit" class="btn btn--ghost"><?= t('ui.admin.load_demo') ?></button>
+                </form>
+            <?php endif; ?>
+            <a class="btn btn--ghost" href="<?= base_url('/admin/logs') ?>"><?= t('ui.admin.logs') ?></a>
+            <a class="btn btn--ghost" href="<?= base_url('/dashboard') ?>"><?= t('ui.admin.back') ?></a>
+        </div>
     </header>
 
     <?php if ($flash): ?>
@@ -44,99 +54,99 @@ $isEigenaar = $rol === Admin::ROL_EIGENAAR;
         </div>
     <?php endif; ?>
 
-    <!-- Statistieken -->
+    <!-- Statistics -->
     <div class="admin-stats">
         <div class="stat-card">
-            <span class="stat-card__getal"><?= (int) $stats['aantalGebruikers'] ?></span>
-            <span class="stat-card__label">Actieve gebruikers</span>
+            <span class="stat-card__number"><?= (int) $stats['user_count'] ?></span>
+            <span class="stat-card__label"><?= t('ui.admin.stat_users') ?></span>
         </div>
         <div class="stat-card">
-            <span class="stat-card__getal"><?= (int) $stats['aantalInactief'] ?></span>
-            <span class="stat-card__label">Inactieve gebruikers</span>
+            <span class="stat-card__number"><?= (int) $stats['inactive_user_count'] ?></span>
+            <span class="stat-card__label"><?= t('ui.admin.stat_inactive') ?></span>
         </div>
         <div class="stat-card">
-            <span class="stat-card__getal"><?= (int) $stats['aantalProjecten'] ?></span>
-            <span class="stat-card__label">Actieve projecten</span>
+            <span class="stat-card__number"><?= (int) $stats['project_count'] ?></span>
+            <span class="stat-card__label"><?= t('ui.admin.stat_projects') ?></span>
         </div>
         <div class="stat-card">
-            <span class="stat-card__getal"><?= (int) $stats['aantalTaken'] ?></span>
-            <span class="stat-card__label">Actieve taken</span>
+            <span class="stat-card__number"><?= (int) $stats['task_count'] ?></span>
+            <span class="stat-card__label"><?= t('ui.admin.stat_tasks') ?></span>
         </div>
         <div class="stat-card stat-card--accent">
             <?php
-                $pct = $stats['aantalTaken'] > 0
-                    ? round(($stats['aantalVoltooid'] / $stats['aantalTaken']) * 100)
+                $pct = $stats['task_count'] > 0
+                    ? round(($stats['completed_task_count'] / $stats['task_count']) * 100)
                     : 0;
             ?>
-            <span class="stat-card__getal"><?= $pct ?>%</span>
-            <span class="stat-card__label">Voltooid systeem-breed</span>
+            <span class="stat-card__number"><?= $pct ?>%</span>
+            <span class="stat-card__label"><?= t('ui.admin.stat_done') ?></span>
         </div>
     </div>
 
     <!-- Tabs -->
     <div class="admin-tabs">
-        <button class="admin-tab admin-tab--active" data-tab="gebruikers">
-            Gebruikers <span class="admin-tab__count"><?= count($gebruikers) ?></span>
+        <button class="admin-tab admin-tab--active" data-tab="users">
+            <?= t('ui.admin.tab_users') ?> <span class="admin-tab__count"><?= count($users) ?></span>
         </button>
-        <button class="admin-tab" data-tab="projecten">
-            Projecten <span class="admin-tab__count"><?= count($projecten) ?></span>
+        <button class="admin-tab" data-tab="projects">
+            <?= t('ui.admin.tab_projects') ?> <span class="admin-tab__count"><?= count($projects) ?></span>
         </button>
     </div>
 
-    <!-- Tab: Gebruikers -->
-    <div class="admin-panel" id="tab-gebruikers">
+    <!-- Tab: Users -->
+    <div class="admin-panel" id="tab-users">
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>Naam</th>
-                    <th>E-mail</th>
-                    <th>Rol</th>
-                    <th>Projecten</th>
-                    <th>Status</th>
-                    <?php if ($isEigenaar): ?><th>Acties</th><?php endif; ?>
+                    <th><?= t('ui.admin.th_name') ?></th>
+                    <th><?= t('ui.admin.th_email') ?></th>
+                    <th><?= t('ui.admin.th_role') ?></th>
+                    <th><?= t('ui.admin.th_projects') ?></th>
+                    <th><?= t('ui.admin.th_status') ?></th>
+                    <?php if ($isOwner): ?><th><?= t('ui.admin.th_actions') ?></th><?php endif; ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($gebruikers as $g): ?>
-                    <?php $gRol = (int) $g['RolId']; ?>
-                    <tr class="<?= !$g['IsActief'] ? 'admin-table__row--inactief' : '' ?>">
+                <?php foreach ($users as $user): ?>
+                    <?php $userRole = (int) $user['role_id']; ?>
+                    <tr class="<?= !$user['is_active'] ? 'admin-table__row--inactive' : '' ?>">
                         <td>
-                            <strong><?= htmlspecialchars($g['VolledigeNaam']) ?></strong>
-                            <?php if ($g['Id'] === $_SESSION['user_id']): ?>
-                                <span class="tag tag--jij">jij</span>
+                            <strong><?= htmlspecialchars($user['full_name']) ?></strong>
+                            <?php if ($user['id'] === $_SESSION['user_id']): ?>
+                                <span class="tag tag--you"><?= t('ui.admin.you') ?></span>
                             <?php endif; ?>
                         </td>
-                        <td class="admin-table__muted"><?= htmlspecialchars($g['Email']) ?></td>
+                        <td class="admin-table__muted"><?= htmlspecialchars($user['email']) ?></td>
                         <td>
-                            <span class="rol-badge rol-badge--<?= strtolower(Admin::rolNaam($gRol)) ?>">
-                                <?= Admin::rolNaam($gRol) ?>
+                            <span class="role-badge role-badge--<?= strtolower(Admin::roleName($userRole)) ?>">
+                                <?= htmlspecialchars(Admin::roleLabel($userRole)) ?>
                             </span>
                         </td>
-                        <td class="admin-table__center"><?= (int) $g['AantalProjecten'] ?></td>
+                        <td class="admin-table__center"><?= (int) $user['project_count'] ?></td>
                         <td>
-                            <span class="status-dot status-dot--<?= $g['IsActief'] ? 'actief' : 'inactief' ?>">
-                                <?= $g['IsActief'] ? 'Actief' : 'Inactief' ?>
+                            <span class="status-dot status-dot--<?= $user['is_active'] ? 'active' : 'inactive' ?>">
+                                <?= t($user['is_active'] ? 'ui.admin.active' : 'ui.admin.inactive') ?>
                             </span>
                         </td>
-                        <?php if ($isEigenaar): ?>
+                        <?php if ($isOwner): ?>
                             <td class="admin-table__actions">
-                                <?php if ($g['Id'] !== (int) $_SESSION['user_id']): ?>
-                                    <!-- Rol wijzigen -->
-                                    <form action="<?= base_url('/admin/gebruiker/rol') ?>" method="post" class="inline-form">
-                                        <input type="hidden" name="gebruiker_id" value="<?= (int) $g['Id'] ?>">
-                                        <select name="rol_id" class="select-inline" onchange="this.form.submit()" title="Rol wijzigen">
-                                            <option value="<?= Admin::ROL_GEBRUIKER ?>" <?= $gRol === Admin::ROL_GEBRUIKER ? 'selected' : '' ?>>Gebruiker</option>
-                                            <option value="<?= Admin::ROL_ADMIN ?>"     <?= $gRol === Admin::ROL_ADMIN     ? 'selected' : '' ?>>Admin</option>
-                                            <option value="<?= Admin::ROL_EIGENAAR ?>"  <?= $gRol === Admin::ROL_EIGENAAR  ? 'selected' : '' ?>>Eigenaar</option>
+                                <?php if ($user['id'] !== (int) $_SESSION['user_id']): ?>
+                                    <!-- Change role -->
+                                    <form action="<?= base_url('/admin/user/role') ?>" method="post" class="inline-form">
+                                        <input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>">
+                                        <select name="role_id" class="select-inline" onchange="this.form.submit()" title="<?= t('ui.admin.change_role') ?>">
+                                            <option value="<?= Admin::ROLE_USER ?>" <?= $userRole === Admin::ROLE_USER ? 'selected' : '' ?>><?= htmlspecialchars(Admin::roleLabel(Admin::ROLE_USER)) ?></option>
+                                            <option value="<?= Admin::ROLE_ADMIN ?>"     <?= $userRole === Admin::ROLE_ADMIN     ? 'selected' : '' ?>><?= htmlspecialchars(Admin::roleLabel(Admin::ROLE_ADMIN)) ?></option>
+                                            <option value="<?= Admin::ROLE_OWNER ?>"  <?= $userRole === Admin::ROLE_OWNER  ? 'selected' : '' ?>><?= htmlspecialchars(Admin::roleLabel(Admin::ROLE_OWNER)) ?></option>
                                         </select>
                                     </form>
-                                    <!-- Activeren / deactiveren -->
-                                    <form action="<?= base_url('/admin/gebruiker/toggle') ?>" method="post"
-                                          onsubmit="return confirm('Gebruiker <?= htmlspecialchars($g['VolledigeNaam'], ENT_QUOTES) ?> <?= $g['IsActief'] ? 'deactiveren' : 'activeren' ?>?')">
-                                        <input type="hidden" name="gebruiker_id" value="<?= (int) $g['Id'] ?>">
-                                        <input type="hidden" name="actief"       value="<?= $g['IsActief'] ? '0' : '1' ?>">
-                                        <button type="submit" class="btn btn--sm <?= $g['IsActief'] ? 'btn--danger' : 'btn--success' ?>">
-                                            <?= $g['IsActief'] ? 'Deactiveren' : 'Activeren' ?>
+                                    <!-- Activate / deactivate -->
+                                    <form action="<?= base_url('/admin/user/toggle') ?>" method="post"
+                                          onsubmit="<?= t_confirm($user['is_active'] ? 'ui.admin.confirm_deactivate' : 'ui.admin.confirm_activate', ['name' => $user['full_name']]) ?>">
+                                        <input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>">
+                                        <input type="hidden" name="active"       value="<?= $user['is_active'] ? '0' : '1' ?>">
+                                        <button type="submit" class="btn btn--sm <?= $user['is_active'] ? 'btn--danger' : 'btn--success' ?>">
+                                            <?= t($user['is_active'] ? 'ui.admin.deactivate' : 'ui.admin.activate') ?>
                                         </button>
                                     </form>
                                 <?php else: ?>
@@ -150,35 +160,35 @@ $isEigenaar = $rol === Admin::ROL_EIGENAAR;
         </table>
     </div>
 
-    <!-- Tab: Projecten -->
-    <div class="admin-panel admin-panel--hidden" id="tab-projecten">
+    <!-- Tab: Projects -->
+    <div class="admin-panel admin-panel--hidden" id="tab-projects">
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th>Project</th>
-                    <th>Eigenaar</th>
-                    <th>Taken</th>
-                    <th>Voortgang</th>
-                    <th>Aangemaakt</th>
-                    <th>Status</th>
+                    <th><?= t('ui.admin.th_project') ?></th>
+                    <th><?= t('ui.admin.th_owner') ?></th>
+                    <th><?= t('ui.admin.th_tasks') ?></th>
+                    <th><?= t('ui.admin.th_progress') ?></th>
+                    <th><?= t('ui.admin.th_created') ?></th>
+                    <th><?= t('ui.admin.th_status') ?></th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($projecten as $p): ?>
-                    <tr class="<?= !$p['IsActief'] ? 'admin-table__row--inactief' : '' ?>">
-                        <td><strong><?= htmlspecialchars($p['Titel']) ?></strong></td>
-                        <td class="admin-table__muted"><?= htmlspecialchars($p['Eigenaar']) ?></td>
-                        <td class="admin-table__center"><?= (int) $p['AantalTaken'] ?></td>
+                <?php foreach ($projects as $project): ?>
+                    <tr class="<?= !$project['is_active'] ? 'admin-table__row--inactive' : '' ?>">
+                        <td><strong><?= htmlspecialchars($project['title']) ?></strong></td>
+                        <td class="admin-table__muted"><?= htmlspecialchars($project['owner']) ?></td>
+                        <td class="admin-table__center"><?= (int) $project['task_count'] ?></td>
                         <td class="admin-table__progress">
                             <div class="progress">
-                                <div class="progress__bar" style="width: <?= (int) $p['Voortgang'] ?>%"></div>
+                                <div class="progress__bar" style="width: <?= (int) $project['progress'] ?>%"></div>
                             </div>
-                            <span class="progress__label"><?= (int) $p['Voortgang'] ?>%</span>
+                            <span class="progress__label"><?= (int) $project['progress'] ?>%</span>
                         </td>
-                        <td class="admin-table__muted"><?= date('d-m-Y', strtotime($p['AangemaaktOp'])) ?></td>
+                        <td class="admin-table__muted"><?= htmlspecialchars(Lang::dateShort($project['created_at'])) ?></td>
                         <td>
-                            <span class="status-dot status-dot--<?= $p['IsActief'] ? 'actief' : 'inactief' ?>">
-                                <?= $p['IsActief'] ? 'Actief' : 'Verwijderd' ?>
+                            <span class="status-dot status-dot--<?= $project['is_active'] ? 'active' : 'inactive' ?>">
+                                <?= t($project['is_active'] ? 'ui.admin.active' : 'ui.admin.deleted') ?>
                             </span>
                         </td>
                     </tr>

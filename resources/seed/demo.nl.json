@@ -1,0 +1,212 @@
+{
+    "_info": "Demo data for Admin panel -> Load demo data. Read by src/Core/Seeder.php. status: todo | doing | done. deadline_days: number of days from today (negative = overdue, omit = no deadline). priority: 1 (high) to 5 (low).",
+    "projects": [
+        {
+            "title": "Website portfolio",
+            "description": "Persoonlijke portfoliosite voor stage-sollicitaties.",
+            "tasks": [
+                {
+                    "title": "Wireframes maken",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -10
+                },
+                {
+                    "title": "Homepage bouwen",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 3
+                },
+                {
+                    "title": "Projectpagina's schrijven",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 10
+                },
+                {
+                    "title": "Hosting regelen",
+                    "priority": 4,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Onderzoeksmethoden",
+            "description": "Opdrachten en tentamenvoorbereiding voor het vak Onderzoeksmethoden.",
+            "tasks": [
+                {
+                    "title": "Literatuur verzamelen",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -14
+                },
+                {
+                    "title": "Enquête opstellen",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 2
+                },
+                {
+                    "title": "Resultaten analyseren",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 12
+                },
+                {
+                    "title": "Verslag inleveren",
+                    "priority": 1,
+                    "status": "todo",
+                    "deadline_days": 21
+                }
+            ]
+        },
+        {
+            "title": "Database ontwerp",
+            "description": "ERD, normalisatie en stored procedures voor het databaseproject.",
+            "tasks": [
+                {
+                    "title": "ERD tekenen",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -7
+                },
+                {
+                    "title": "Tabellen normaliseren",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 4
+                },
+                {
+                    "title": "Stored procedures schrijven",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 9
+                }
+            ]
+        },
+        {
+            "title": "Stage zoeken",
+            "description": "Stageplek vinden voor volgend semester.",
+            "tasks": [
+                {
+                    "title": "CV bijwerken",
+                    "priority": 2,
+                    "status": "done",
+                    "deadline_days": -5
+                },
+                {
+                    "title": "Motivatiebrief schrijven",
+                    "priority": 1,
+                    "status": "doing",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Bedrijven benaderen",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 7
+                },
+                {
+                    "title": "Gesprekken plannen",
+                    "priority": 3,
+                    "status": "todo"
+                }
+            ]
+        },
+        {
+            "title": "Groepsproject Scrum",
+            "description": "Scrumproject met vier teamgenoten.",
+            "tasks": [
+                {
+                    "title": "Product backlog vullen",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -12
+                },
+                {
+                    "title": "Sprint 1 plannen",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -6
+                },
+                {
+                    "title": "Sprint review voorbereiden",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 5
+                },
+                {
+                    "title": "Retrospective houden",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 6
+                }
+            ]
+        },
+        {
+            "title": "Netwerken practicum",
+            "description": "Labopdrachten routering en subnetting.",
+            "tasks": [
+                {
+                    "title": "Subnetting oefenen",
+                    "priority": 3,
+                    "status": "doing",
+                    "deadline_days": 8
+                },
+                {
+                    "title": "Packet Tracer lab afronden",
+                    "priority": 2,
+                    "status": "todo",
+                    "deadline_days": 15
+                }
+            ]
+        },
+        {
+            "title": "Huishouden",
+            "description": "Dingen die ook gedaan moeten worden.",
+            "tasks": [
+                {
+                    "title": "Boodschappen doen",
+                    "priority": 4,
+                    "status": "todo",
+                    "deadline_days": 1
+                },
+                {
+                    "title": "Kamer opruimen",
+                    "priority": 5,
+                    "status": "todo"
+                },
+                {
+                    "title": "Huur overmaken",
+                    "priority": 1,
+                    "status": "done",
+                    "deadline_days": -2
+                }
+            ]
+        },
+        {
+            "title": "Afstuderen voorbereiden",
+            "description": "Eerste verkenning van het afstudeeronderzoek.",
+            "tasks": [
+                {
+                    "title": "Onderwerp kiezen",
+                    "priority": 2,
+                    "status": "doing",
+                    "deadline_days": 14
+                },
+                {
+                    "title": "Begeleider benaderen",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 18
+                },
+                {
+                    "title": "Planning opstellen",
+                    "priority": 3,
+                    "status": "todo",
+                    "deadline_days": 25
+                }
+            ]
+        }
+    ]
+}

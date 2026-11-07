@@ -1,9 +1,9 @@
 <?php
 /**
- * Database configuratie
+ * Database configuration
  * 
- * Leest de waardes uit .env en geeft een associatieve array terug
- * die door src/Core/Database.php gebruikt wordt om de PDO connectie op te zetten.
+ * Reads the values from .env and returns associative array that
+ * src/Core/Database.php uses to set up the PDO connection.
  */
 
 if (!function_exists('thbo_load_env')) {
@@ -26,7 +26,7 @@ if (!function_exists('thbo_load_env')) {
 
             [$name, $value] = array_map('trim', explode('=', $line, 2));
 
-            // Strip eventuele quotes rondom de waarde
+            // Strip any quotes around the value
             if (strlen($value) >= 2) {
                 $first = $value[0];
                 $last = $value[strlen($value) - 1];

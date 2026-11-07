@@ -11,7 +11,7 @@
     place-items: center;
     padding    : $space-6 $space-4;
 
-    // Subtle achtergrondaccent zodat de auth-pagina's niet zo kaal staan
+    // Subtle background accent so the auth pages do not look so bare
     background:
         radial-gradient(circle at top right, rgba($color-primary, 0.08), transparent 40%),
         radial-gradient(circle at bottom left, rgba(#7c3aed, 0.06), transparent 35%);
