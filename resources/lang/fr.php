@@ -128,6 +128,8 @@ return [
             'register'   => 'Créer un compte',
             'built_with' => 'Réalisé avec PHP, MySQL et SCSS',
             'language'   => 'Langue',
+            'theme_to_dark'  => 'Passer en mode sombre',
+            'theme_to_light' => 'Passer en mode clair',
         ],
 
         'login' => [

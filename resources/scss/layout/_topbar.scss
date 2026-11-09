@@ -44,7 +44,8 @@
         height         : 36px;
         display        : grid;
         place-items    : center;
-        background     : linear-gradient(135deg, $color-primary 0%, #7c3aed 100%);
+        // brand mark: same colors in both themes
+        background     : linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         color          : #fff;
         font-weight    : 700;
         border-radius  : $radius-md;
@@ -93,13 +94,13 @@
 }
 
 // Owner admin button — a bit more eye-catching than a regular ghost button
-.btn--admin-eigenaar {
-    border-color: #d97706;
-    color       : #d97706;
+.btn--admin-owner {
+    border-color: $color-warning;
+    color       : $color-warning;
 
     &:hover {
-        background  : #fef3c7;
-        border-color: #d97706;
+        background  : $color-warning-soft;
+        border-color: $color-warning;
     }
 }
 
@@ -220,4 +221,31 @@ $lang-menu-max-height: 8.5rem;   // about 3 languages visible; higher = more lan
     }
 
     &__option--active &__code { color: $color-primary; }
+}
+
+
+// ============================================================================
+// Light/dark toggle (an icon button; app.js reveals it and sets the icon)
+//
+// Written as .btn.theme-toggle on purpose: .theme-toggle alone has the same
+// specificity as .btn, and .btn comes later in the CSS, so its padding would
+// win and squeeze the icon to nothing.
+// ============================================================================
+
+.btn.theme-toggle {
+    width  : 40px;
+    height : 40px;
+    padding: 0;
+    color  : $color-icon;                     // black in light mode, white in dark mode
+}
+
+// .btn prefix: the icon class (components/_icons.scss) comes later and would otherwise set 24px.
+.btn .theme-toggle__icon {
+    font-size: 22px;
+}
+
+// Used when the icon font could not be loaded: a plain text symbol instead of the icon name.
+.theme-toggle--fallback .theme-toggle__icon {
+    font-family          : inherit;
+    font-feature-settings: normal;
 }

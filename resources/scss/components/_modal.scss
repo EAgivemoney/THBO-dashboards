@@ -18,7 +18,7 @@
     &__backdrop {
         position  : absolute;
         inset     : 0;
-        background: rgba(15, 23, 42, 0.55);
+        background: $color-overlay;
         backdrop-filter: blur(2px);
     }
 

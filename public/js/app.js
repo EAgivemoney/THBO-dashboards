@@ -330,3 +330,93 @@ window.THBO_T = function (key, vars) {
         }
     });
 })();
+
+/* ── Theme toggle (light / dark) ─────────────────────────────
+ * The saved choice is applied by a small script in <head> (layout/header.php)
+ * before the page is painted. Without a saved choice the CSS follows the
+ * system setting (prefers-color-scheme).
+ *
+ * The icon is a Material Symbols ligature ("dark_mode" / "light_mode"). The
+ * button is only revealed once that icon font has loaded; if it cannot be
+ * loaded, a plain text symbol is shown instead of the raw icon name.
+ */
+(function () {
+    var STORAGE_KEY = 'thbo-theme';
+    var ICON_FONT   = '22px "Material Symbols Outlined"';
+    var FONT_WAIT   = 3000; // ms to wait for the icon font before using the text symbols
+
+    var button = document.getElementById('theme-toggle');
+    if (!button) return;
+
+    var icon  = button.querySelector('.theme-toggle__icon');
+    var root  = document.documentElement;
+    var query = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+
+    // The button always shows the theme you would switch TO.
+    var ICON_NAME = { toDark: 'dark_mode', toLight: 'light_mode' };   // Material Symbols names
+    var TEXT_ICON = { toDark: '\u263E',   toLight: '\u2600' };       // fallback symbols: moon, sun
+    var useTextIcons = false;
+
+    /** The theme that is visible right now: the explicit choice, otherwise the system setting. */
+    function currentTheme() {
+        var explicit = root.getAttribute('data-theme');
+        if (explicit === 'dark' || explicit === 'light') return explicit;
+        return query && query.matches ? 'dark' : 'light';
+    }
+
+    function render() {
+        var theme  = currentTheme();
+        var toDark = theme !== 'dark';
+        var key    = toDark ? 'toDark' : 'toLight';
+        var label  = toDark ? button.dataset.labelToDark : button.dataset.labelToLight;
+
+        button.dataset.mode = theme;
+        button.classList.toggle('theme-toggle--fallback', useTextIcons);
+        if (icon) icon.textContent = useTextIcons ? TEXT_ICON[key] : ICON_NAME[key];
+        button.setAttribute('aria-label', label);
+        button.title = label;
+    }
+
+    button.addEventListener('click', function () {
+        var next = currentTheme() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* storage not available */ }
+        render();
+    });
+
+    // While the visitor has not chosen, follow changes of the system setting.
+    if (query) {
+        var onSystemChange = function () { render(); };
+        if (query.addEventListener) query.addEventListener('change', onSystemChange);
+        else if (query.addListener) query.addListener(onSystemChange);
+    }
+
+    // Reveal the button when the icon font is ready (or use text symbols if it is not).
+    var revealed = false;
+    function settle(fontLoaded) {
+        if (!revealed) {
+            revealed = true;
+            useTextIcons = !fontLoaded;
+            render();
+            button.hidden = false;
+        } else if (fontLoaded && useTextIcons) {
+            useTextIcons = false;          // the font arrived after the wait: switch to the real icons
+            render();
+        }
+    }
+
+    if (document.fonts && document.fonts.load) {
+        var timer = setTimeout(function () { settle(false); }, FONT_WAIT);
+        document.fonts.load(ICON_FONT, 'dark_mode light_mode').then(function (faces) {
+            clearTimeout(timer);
+            settle(!!(faces && faces.length));    // empty list: the font was never defined (stylesheet blocked)
+        }, function () {
+            clearTimeout(timer);
+            settle(false);
+        });
+    } else {
+        settle(false);
+    }
+
+    render();
+})();

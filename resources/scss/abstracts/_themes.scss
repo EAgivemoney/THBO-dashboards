@@ -1,0 +1,154 @@
+// ============================================================================
+// Theme tokens (light + dark)
+//
+// All colors of the site are CSS custom properties, defined here. The Sass
+// variables in _variables.scss ($color-surface, ...) just point to them with
+// var(--color-surface), so the rest of the SCSS does not change per theme.
+//
+// Which theme is active:
+//   - <html data-theme="light"> or <html data-theme="dark">  → the visitor's choice
+//     (set by the toggle in the top bar, remembered in localStorage)
+//   - no data-theme attribute → follows the system (prefers-color-scheme)
+//
+// This file emits CSS, so it is @use'd exactly once, from main.scss.
+// ============================================================================
+
+@mixin light-tokens {
+    color-scheme: light;
+
+    --color-bg            : #f4f6fb;
+    --color-surface       : #ffffff;
+    --color-surface-alt   : #f8fafc;
+    --color-border        : #e2e8f0;
+    --color-border-strong : #cbd5e1;
+
+    --color-text          : #0f172a;
+    --color-text-muted    : #64748b;
+    --color-text-subtle   : #94a3b8;
+
+    --color-primary       : #4f46e5;
+    --color-primary-hover : #4338ca;
+    --color-primary-soft  : #eef2ff;
+    --color-primary-tint  : #b9b6f5;
+    --color-primary-rgb   : 79, 70, 229;
+    --color-on-primary    : #ffffff;
+
+    --color-success       : #16a34a;
+    --color-success-hover : #117f3a;
+    --color-success-soft  : #dcfce7;
+    --color-success-text  : #107636;
+    --color-success-rgb   : 22, 163, 74;
+    --color-on-success    : #ffffff;
+
+    --color-warning       : #d97706;
+    --color-warning-soft  : #fef3c7;
+    --color-warning-text  : #c06905;
+    --color-warning-tint  : #fbc17d;
+    --color-warning-strong: #8f4e04;
+    --color-warning-rgb   : 217, 119, 6;
+
+    --color-danger        : #dc2626;
+    --color-danger-hover  : #bb1e1e;
+    --color-danger-soft   : #fee2e2;
+    --color-danger-text   : #bb1e1e;
+    --color-danger-rgb    : 220, 38, 38;
+    --color-on-danger     : #ffffff;
+
+    // Per status column on the kanban board
+    --color-todo          : #6366f1;
+    --color-doing         : #f59e0b;
+    --color-done          : #10b981;
+
+    // Priority colors (high → low); the badge text is always white
+    --color-prio-1        : #dc2626;
+    --color-prio-2        : #ea580c;
+    --color-prio-3        : #2563eb;
+    --color-prio-4        : #475569;
+    --color-prio-5        : #94a3b8;
+
+    --color-icon          : #000000;   // icons: black on light, white on dark
+
+    --color-overlay       : rgba(15, 23, 42, 0.55);
+
+    --shadow-sm           : 0 1px 2px rgba(15, 23, 42, 0.06);
+    --shadow-md           : 0 4px 12px rgba(15, 23, 42, 0.08);
+    --shadow-lg           : 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+@mixin dark-tokens {
+    color-scheme: dark;
+
+    --color-bg            : #0b1020;
+    --color-surface       : #131a2b;
+    --color-surface-alt   : #1a2338;
+    --color-border        : #263149;
+    --color-border-strong : #38455f;
+
+    --color-text          : #e6eaf2;
+    --color-text-muted    : #9aa7bd;
+    --color-text-subtle   : #7f8ca6;
+
+    // In dark mode the accent colors are lighter, so the text on them is dark.
+    --color-primary       : #818cf8;
+    --color-primary-hover : #a5b4fc;
+    --color-primary-soft  : #1f2645;
+    --color-primary-tint  : #3b4380;
+    --color-primary-rgb   : 129, 140, 248;
+    --color-on-primary    : #0b1020;
+
+    --color-success       : #4ade80;
+    --color-success-hover : #86efac;
+    --color-success-soft  : #11301f;
+    --color-success-text  : #86efac;
+    --color-success-rgb   : 74, 222, 128;
+    --color-on-success    : #04210f;
+
+    --color-warning       : #fbbf24;
+    --color-warning-soft  : #35290d;
+    --color-warning-text  : #fcd34d;
+    --color-warning-tint  : #4a3711;
+    --color-warning-strong: #fcd34d;
+    --color-warning-rgb   : 251, 191, 36;
+
+    --color-danger        : #f87171;
+    --color-danger-hover  : #fca5a5;
+    --color-danger-soft   : #3b1620;
+    --color-danger-text   : #fca5a5;
+    --color-danger-rgb    : 248, 113, 113;
+    --color-on-danger     : #2a0709;
+
+    --color-todo          : #818cf8;
+    --color-doing         : #fbbf24;
+    --color-done          : #34d399;
+
+    --color-prio-1        : #dc2626;
+    --color-prio-2        : #c2410c;
+    --color-prio-3        : #2563eb;
+    --color-prio-4        : #475569;
+    --color-prio-5        : #334155;
+
+    --color-icon          : #ffffff;
+
+    --color-overlay       : rgba(2, 6, 23, 0.7);
+
+    --shadow-sm           : 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md           : 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg           : 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+// Default: light.
+:root {
+    @include light-tokens;
+}
+
+// No explicit choice → follow the system setting.
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        @include dark-tokens;
+    }
+}
+
+// Explicit choice from the toggle.
+:root[data-theme='dark'] {
+    @include dark-tokens;
+}

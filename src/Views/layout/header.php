@@ -9,10 +9,23 @@ $role = (int) ($_SESSION['user_role'] ?? 0);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <!-- Apply the saved theme before the stylesheet loads, so there is no flash of the wrong theme -->
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('thbo-theme');
+                if (theme === 'dark' || theme === 'light') {
+                    document.documentElement.setAttribute('data-theme', theme);
+                }
+            } catch (e) { /* storage not available: follow the system setting */ }
+        })();
+    </script>
     <title><?= htmlspecialchars($title ?? 'THBO Dashboards') ?> — THBO Dashboards</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="<?= base_url('/css/main.css') ?>?v=<?= filemtime(dirname(__DIR__, 3) . '/public/css/main.css') ?>">
 </head>
 <body class="app">
@@ -39,6 +52,13 @@ $role = (int) ($_SESSION['user_role'] ?? 0);
                     <a class="btn btn--ghost"   href="<?= base_url('/login') ?>"><?= t('ui.layout.login') ?></a>
                     <a class="btn btn--primary" href="<?= base_url('/register') ?>"><?= t('ui.layout.register') ?></a>
                 <?php endif; ?>
+
+                <!-- Light/dark toggle: hidden until app.js is running, because it needs JavaScript -->
+                <button type="button" class="btn btn--ghost theme-toggle" id="theme-toggle" hidden
+                        data-label-to-dark="<?= t('ui.layout.theme_to_dark') ?>"
+                        data-label-to-light="<?= t('ui.layout.theme_to_light') ?>">
+                    <span class="material-symbols-outlined theme-toggle__icon" aria-hidden="true">dark_mode</span>
+                </button>
 
                 <!-- Language picker: also works without JavaScript (details/summary + plain form buttons) -->
                 <details class="lang-switch">

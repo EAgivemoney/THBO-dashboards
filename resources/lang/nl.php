@@ -148,6 +148,8 @@ return [
             'register'   => 'Account aanmaken',
             'built_with' => 'Gebouwd met PHP, MySQL en SCSS',
             'language'   => 'Taal',
+            'theme_to_dark'  => 'Donkere modus aanzetten',
+            'theme_to_light' => 'Lichte modus aanzetten',
         ],
 
         'login' => [

@@ -10,6 +10,9 @@
 // The Inter font is loaded through a <link> in src/Views/layout/header.php,
 // so there is nothing to import here.
 
+// Theme tokens (light + dark CSS custom properties) — emits CSS, keep it first
+@use 'abstracts/themes';
+
 // Base
 @use 'base/reset';
 
@@ -18,6 +21,7 @@
 
 // Components
 @use 'components/buttons';
+@use 'components/icons';
 @use 'components/forms';
 @use 'components/alerts';
 @use 'components/modal';

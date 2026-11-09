@@ -11,9 +11,10 @@
     box-shadow: $shadow-sm;
 }
 
-@mixin focus-ring($color: $color-primary) {
+// $rgb has to be the matching "-rgb" token of $color (rgba() needs the plain channels).
+@mixin focus-ring($color: $color-primary, $rgb: $color-primary-rgb) {
     outline: none;
-    box-shadow: 0 0 0 3px rgba($color, 0.25);
+    box-shadow: 0 0 0 3px rgba($rgb, 0.25);
     border-color: $color;
 }
 

@@ -52,6 +52,12 @@ button {
 
 img { max-width: 100%; display: block; }
 
+// The hidden attribute must always win, also on elements that set their own
+// display (e.g. .btn is inline-flex, which would otherwise show hidden buttons).
+[hidden] {
+    display: none !important;
+}
+
 // Globale layout — main has to push the footer to the bottom
 .app    { min-height: 100vh; display: flex; flex-direction: column; }
 .main   { flex: 1; padding: $space-8 $space-6; }
